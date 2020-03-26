@@ -1,0 +1,109 @@
+<app-splash-screen *ngIf="!isUserLogged"
+  (connectRequest)="onConnectRequest($event)"></app-splash-screen>
+
+<div *ngIf="isUserLogged" [ngClass]="{'dark-theme': settingsService.settings.isDarkTheme}" class="mat-app-background container" fxLayout="column" fxLayoutAlign="start stretch" [ngStyle]="{'height.px': screenHeight}">
+
+  <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <button mat-flat-button color="primary" class="menu-button" (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div fxLayout="row" fxLayoutAlign="center center" class="title" fxFlex="1 0 0">
+      <span class="title-text">{{ chatManager && chatManager.chat().target().name || 'NgWebIRC' }}</span>
+    </div>
+    <div class="right-toolbar">
+      <button mat-icon-button class="icon-big" *ngIf="mediaPlaylistCount > 0"
+              matTooltip="Shared videos" i18n-matTooltip="@@sharedVideos"
+              (click)="onChannelPlaylistButtonClick(chatManager)"
+              [matBadge]="mediaPlaylistCount"
+              matBadgePosition="after" matBadgeColor="primary">
+        <mat-icon [color]="this.mediaPlaylistNotify ? 'accent' : ''">music_note</mat-icon>
+      </button>
+      <button mat-icon-button class="icon-big" *ngIf="chatManager.channel() && chatManager.currentChat"
+              matTooltip="Channel users" i18n-matTooltip="@@channelUsers"
+              (click)="onChannelUsersButtonClick(chatManager)"
+              [matBadge]="chatManager.channel().users.length"
+              matBadgePosition="after" matBadgeColor="primary">
+        <mat-icon>people_alt</mat-icon>
+      </button>
+      <button mat-icon-button class="icon-big" *ngIf="!chatManager.channel()"
+              matTooltip="Join a channel" i18n-matTooltip="@@joinChannel"
+              (click)="onChannelListClick(chatManager)">
+        <mat-icon>group_add</mat-icon>
+      </button>
+      <button mat-icon-button class="icon-big"
+              matTooltip="Messages" i18n-matTooltip="@@messages"
+              (click)="onChatMessagesButtonClick(chatManager)"
+              [matBadge]="chatManager.newMessageCount()"
+              [matBadgeHidden]="chatManager.newMessageCount() === 0 || (!chatManager.showUserList && chatManager.showRightPanel)"
+              matBadgePosition="after" matBadgeColor="accent">
+        <mat-icon>forum</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container [hasBackdrop]="screenWidth < sideOverBreakPoint">
+
+    <mat-sidenav-content>
+
+      <div class="content" fxLayout="column" fxLayoutAlign="start stretch">
+
+        <app-chat-manager #chatManager (chatLoading)="onChatLoading($event)"></app-chat-manager>
+
+      </div>
+
+    </mat-sidenav-content>
+
+    <mat-sidenav #sidenav class="left-panel elevation-background theme-border-primary mat-elevation-z3"
+                 [mode]="screenWidth < sideOverBreakPoint ? 'over' : 'side'"
+                 [opened]="screenWidth > 1024 ? true : false" position="start"
+                 fxLayout="column">
+
+      <h4>{{ chatManager.client().config.nick }}</h4>
+
+      <button mat-flat-button [disabled]="!chatManager.isLoggedIn" (click)="onNickChangeClick(chatManager)">
+        <mat-icon color="primary">autorenew</mat-icon>
+        <span i18n="@@changeNickname">Change nickname</span>
+      </button>
+
+      <button mat-flat-button [disabled]="!chatManager.isLoggedIn" (click)="onUserActionClick(chatManager)">
+        <mat-icon color="primary">announcement</mat-icon>
+        <span i18n="@@describeAction">Action</span>
+      </button>
+
+      <mat-checkbox [checked]="isUserAway" [disabled]="!chatManager.isLoggedIn"
+                    (change)="onSetAwayClick($event, chatManager)"
+                    i18n="@@setAway">Away</mat-checkbox>
+
+      <br />
+
+      <button [disabled]="!chatManager.isLoggedIn" mat-flat-button (click)="onChannelListClick(chatManager)">
+        <mat-icon color="primary">group_add</mat-icon>
+        <span i18n="@@joinChannel">Join a channel</span>
+      </button>
+
+      <button *ngIf="chatManager.client().isConnected()" mat-flat-button (click)="onDisconnectClick(chatManager)">
+        <mat-icon color="warn">exit_to_app</mat-icon>
+        <span i18n="@@disconnect">Disconnect</span>
+      </button>
+      <button *ngIf="!chatManager.client().isConnected()" mat-flat-button (click)="onConnectClick(chatManager)">
+        <mat-icon color="accent">offline_bolt</mat-icon>
+        <span i18n="@@connect">Connect</span>
+      </button>
+
+      <label i18n="@@settings">Settings</label>
+
+      <mat-checkbox [disabled]="chatManager.channel() == null"
+                    [checked]="chatManager.channel() && chatManager.channel().preferences.showChannelActivity"
+                    (change)="onShowJoinPartsChange($event, chatManager)" i18n="@@showJoinParts">Show join/parts</mat-checkbox>
+      <mat-checkbox (change)="onToggleDarkTheme($event.checked)" [checked]="settingsService.settings.isDarkTheme" i18n="@@darkTheme">Dark theme</mat-checkbox>
+      <mat-checkbox (change)="onToggleShowColors($event.checked)" [checked]="settingsService.settings.showColors" i18n="@@enableColors">Enable colors</mat-checkbox>
+
+    </mat-sidenav>
+
+  </mat-sidenav-container>
+
+</div>
+
+<div class="loading-message" *ngIf="isLoadingChat" fxLayout="column" fxLayoutAlign="center center">
+  <mat-spinner>Loading</mat-spinner>
+</div>

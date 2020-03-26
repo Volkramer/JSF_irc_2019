@@ -1,0 +1,270 @@
+<div class="container" fxFlexFill fxLayout="row" fxLayoutAlign="stretch stretch">
+
+  <app-messages-window
+    #messageWindow [ngClass]="{'full-width': !showRightPanel, hidden: !currentChat}"></app-messages-window>
+
+  <div *ngIf="!currentChat" class="cover"
+       fxLayout="column" fxLayoutAlign="center center"
+       [ngClass]="{'full-width': !showRightPanel || deviceService.isMobile()}">
+    <mat-icon class="face">sentiment_satisfied_alt</mat-icon>
+
+    <div fxLayout="rows" fxLayoutAlign="center center"
+         fxLayout.xs="column"
+         fxLayoutGap="32px">
+
+      <button *ngIf="client().isConnected()"
+              color="primary" mat-raised-button
+              (click)="onChannelJoinClick()">
+        <mat-icon>group_add</mat-icon>
+        &nbsp;
+        <span i18n="@@joinChannel">Join channel</span>
+      </button>
+      <!--
+      // TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      // TODO: Add info summary & statistics !!
+      // TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      --->
+
+    </div>
+
+  </div>
+
+  <app-youtube-video #videoPlayer></app-youtube-video>
+
+  <div class="conversations-list theme-border-primary elevation-background mat-drawer mat-drawer-side mat-elevation-z4"
+       *ngIf="!showUserList || !showRightPanel"
+       [ngClass]="{'right-panel-show': showRightPanel, 'right-panel-hide': !showRightPanel}"
+       fxLayout="column" fxLayoutAlign="stretch stretch">
+    <!-- strong class="title">Messaggi</strong -->
+    <div *ngIf="boundChatList.activePublicChats() > 0" class="chat-type">
+      <span i18n="@@yourChannels" i18n="@@yourChannels">Your channels</span> ({{ boundChatList.activePublicChats() }})
+    </div>
+    <div class="chat-row" *ngFor="let c of boundChatList.public | callback: filterChat" fxLayout="row"> <!--  | sortBy:'desc':'timestamp' -->
+      <button class="chat-button-menu" mat-icon-button (click)="onLeaveChannelClick(c);onCloseChatClick(c)">
+        <mat-icon color="warn">close</mat-icon>
+      </button>
+      <button class="chat-button" mat-raised-button (click)="onChatButtonClick(c)" fxFlex="1 0 0"
+              [color]="c === chat() ? 'primary': ''"
+              [matBadge]="c.stats.messages.new > 99 ? '99+' : c.stats.messages.new"
+              [matBadgeHidden]="c.preferences.disableNotifications || c.stats.messages.new === 0"
+              matBadgePosition="after" matBadgeColor="accent"
+              fxLayout="row" fxLayoutAlign="start center">
+        <span>{{c.target().name}}</span>
+      </button>
+      <mat-icon *ngIf="c.preferences.disableNotifications" class="notifications-off-badge">notifications_off</mat-icon>
+    </div>
+    <div *ngIf="boundChatList.activePrivateChats() > 0" class="chat-type">
+      <span i18n="@@privateChats">Private chats</span> ({{ boundChatList.activePrivateChats() }})
+    </div>
+    <div class="chat-row" *ngFor="let c of boundChatList.private | callback: filterChat" fxLayout="row"> <!--  | sortBy:'desc':'timestamp' -->
+      <button class="chat-button-menu" mat-icon-button (click)="onChatMenuButtonClick(c)"
+              [matMenuTriggerFor]="userChatMenu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <button class="chat-button" mat-raised-button (click)="onChatButtonClick(c)" fxFlex="1 0 0"
+              [color]="c === chat() ? 'primary': ''"
+              [matBadge]="c.stats.messages.new > 99 ? '99+' : c.stats.messages.new"
+              [matBadgeHidden]="c.preferences.disableNotifications || c.stats.messages.new === 0"
+              matBadgePosition="after" matBadgeColor="accent"
+              fxLayout="row" fxLayoutAlign="start center">
+        <span>{{c.target().name}}</span>
+      </button>
+      <mat-icon *ngIf="c.preferences.disableNotifications" class="notifications-off-badge">notifications_off</mat-icon>
+    </div>
+  </div>
+
+  <div class="users-list theme-border-primary elevation-background mat-drawer mat-drawer-side mat-elevation-z4"
+       *ngIf="showUserList || !showRightPanel"
+       [ngClass]="{'right-panel-show': showRightPanel, 'right-panel-hide': !showRightPanel}"
+       fxLayout="column" fxLayoutAlign="stretch stretch">
+    <div class="search-field" fxLayout="row" fxLayoutAlign="start stretch">
+      <button class="chat-button-menu"
+              mat-icon-button [matMenuTriggerFor]="channelMenu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <div *ngIf="userSearchMode">
+        <input type="text" placeholder="User name..." i18n-placeholder="@@findUserName" autofocus
+               fxFlex="1 0 0"
+               [(ngModel)]="userSearchValue"
+               (input)="onUserSearchChange()"
+               tabindex="0">
+        <button mat-button
+                mat-icon-button aria-label="Clear"
+                (click)="userSearchValue=''; userSearchMode = false">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div *ngIf="currentChat && !userSearchMode" style="height: 42px;">
+        <strong class="title">{{ currentChat.info.name }}</strong>
+      </div>
+    </div>
+    <cdk-virtual-scroll-viewport *ngIf="this.channel()" #userListScrollView class="v-scroll"
+                                 itemSize="38" minBufferPx="200" maxBufferPx="400">
+      <button mat-button class="user" [ngClass]="{ 'is-away': u.away }"
+              *cdkVirtualFor="let u of channel().users"
+              (click)="onUserClick(userMenu, u)"
+              [matMenuTriggerFor]="userMenu"
+              fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon [color]="u.color" [innerText]="u.icon"></mat-icon>
+        <span [innerText]="u.user.name"></span>
+        <mat-icon *ngIf="u.playlist.length > 0">music_video</mat-icon>
+      </button>
+    </cdk-virtual-scroll-viewport>
+  </div>
+
+  <mat-menu #userMenu="matMenu" xPosition="after">
+    <div class="user-menu-title" *ngIf="currentUser && currentUser.user">{{currentUser.user.name}}</div>
+    <!-- open a chat with this chatUser -->
+    <button *ngIf="currentUser == null || !currentUser.online" disabled mat-menu-item>
+      <mat-icon>speaker_notes_off</mat-icon>
+      <span i18n="@@offline">Offline</span>
+    </button>
+    <!-- reply this message (will insert this user nick in the input text) -->
+    <button *ngIf="currentUser && isPublicChat(currentChat)"
+            mat-menu-item (click)="onUserMenuReply()">
+      <mat-icon>reply</mat-icon>
+      <span i18n="@@mention">Mention</span>
+    </button>
+    <!-- open a chat with this chatUser -->
+    <button *ngIf="currentUser && isPublicChat(currentChat)"
+            mat-menu-item (click)="onUserMenuChat()">
+      <mat-icon>message</mat-icon>
+      <span i18n="@@chat">Chat</span>
+    </button>
+    <!-- collection of media links shared by the chatUser -->
+    <button *ngIf="currentUser && currentUser.playlist.length > 0"
+            mat-menu-item
+            [disabled]="currentUser.playlist.length === 0"
+            (click)="onUserPlaylistClick(currentUser)">
+      <mat-icon>library_music</mat-icon>
+      <span i18n="@@playlist">Playlist</span>
+      <span>&nbsp;({{currentUser.playlist.length}})</span>
+    </button>
+    <!-- channel info (topic) / chatUser whois -->
+    <button *ngIf="currentUser && currentUser.user" mat-menu-item (click)="onUserInfoClick(currentUser)">
+      <mat-icon>info</mat-icon>
+      <span i18n="@@info">Info</span>
+    </button>
+  </mat-menu>
+
+  <mat-menu #channelMenu="matMenu" xPosition="after">
+    <ng-container *ngIf="currentChat">
+      <div class="user-menu-title">{{ currentChat.info.name }}</div>
+      <button mat-menu-item (click)="userSearchMode = true" [disabled]="userSearchMode">
+        <mat-icon>search</mat-icon>
+        <span i18n="@@findUser">Find user</span>
+      </button>
+      <!-- turn on/off notifications for messages from this chatUser -->
+      <button mat-menu-item (click)="onToggleNotificationClick(currentChat)">
+        <mat-icon *ngIf="!currentChat.preferences.disableNotifications">notifications_off</mat-icon>
+        <span *ngIf="!currentChat.preferences.disableNotifications" i18n="@@disableNotifications">Disable notifications</span>
+        <mat-icon *ngIf="currentChat.preferences.disableNotifications">notifications</mat-icon>
+        <span *ngIf="currentChat.preferences.disableNotifications" i18n="@@enableNotifications">Enable notifications</span>
+      </button>
+      <!-- channel info (topic) -->
+      <button mat-menu-item (click)="showRightPanel = false;">
+        <mat-icon>arrow_forward</mat-icon>
+        <span i18n="@@hidePanel">Hide panel</span>
+      </button>
+      <!-- leave the chat room and close this chat -->
+      <button mat-menu-item (click)="onLeaveChannelClick(currentChat)">
+        <mat-icon color="warn">close</mat-icon>
+        <span i18n="@@leaveChannel">Leave channel</span>
+      </button>
+    </ng-container>
+  </mat-menu>
+
+  <mat-menu #userChatMenu="matMenu" xPosition="after">
+    <ng-container *ngIf="currentMenuChat">
+      <div class="user-menu-title">{{ currentMenuChat.info.name }}</div>
+      <button *ngIf="currentMenuChat.user.playlist.length > 0" mat-menu-item (click)="onUserPlaylistClick(currentMenuChat.user)">
+        <mat-icon>music_video</mat-icon>
+        <span i18n="@@playlist">Playlist</span>
+        <span>&nbsp;({{currentMenuChat.user.playlist.length}})</span>
+      </button>
+      <!-- turn on/off notifications for messages from this chatUser -->
+      <button mat-menu-item (click)="onToggleNotificationClick(currentMenuChat)">
+        <mat-icon *ngIf="!currentMenuChat.preferences.disableNotifications">notifications_off</mat-icon>
+        <span *ngIf="!currentMenuChat.preferences.disableNotifications" i18n="@@disableNotifications">Disable notifications</span>
+        <mat-icon *ngIf="currentMenuChat.preferences.disableNotifications">notifications</mat-icon>
+        <span *ngIf="currentMenuChat.preferences.disableNotifications" i18n="@@enableNotifications">Enable notifications</span>
+      </button>
+      <!-- channel info (topic) / chatUser whois -->
+      <button mat-menu-item (click)="onUserInfoClick(currentMenuChat)">
+        <mat-icon>info</mat-icon>
+        <span i18n="@@info">Info</span>
+      </button>
+      <!-- close this chat -->
+      <button mat-menu-item (click)="onCloseChatClick(currentMenuChat)">
+        <mat-icon>close</mat-icon>
+        <span i18n="@@close">Close</span>
+      </button>
+    </ng-container>
+  </mat-menu>
+
+</div>
+
+<div *ngIf="currentChat && currentChat.userStatus && (currentChat.userStatus.kicked || currentChat.userStatus.banned || currentChat.userStatus.invite || currentChat.userStatus.registered)"
+     [ngClass]="{'full-width': !showRightPanel, hidden: !currentChat}"
+     class="statusOverlay" fxLayout="column" fxLayoutAlign="center center">
+
+  <h1 class="theme-color-primary">{{currentChat.info.name}}</h1>
+
+  <div *ngIf="currentChat.userStatus.invite" class="theme-color-notice">
+    This channel is invite only.
+  </div>
+  <div *ngIf="currentChat.userStatus.registered" class="theme-color-notice">
+    Only registered users can join this channel.
+  </div>
+  <div *ngIf="currentChat.userStatus.kicked" class="theme-color-notice">
+    You've been kicked from this channel.
+  </div>
+  <div *ngIf="currentChat.userStatus.banned" class="theme-color-notice">
+    You are banned from this channel.
+  </div>
+
+  <div class="tool-bar" fxLayout="row" fxLayoutAlign="space-around center">
+    <button mat-raised-button (click)="onLeaveChannelClick(currentChat)">
+      <mat-icon color="warn">close</mat-icon>
+      <span>Close</span>
+    </button>
+    <button mat-raised-button (click)="onJoinChannelClick(currentChat)">
+      <mat-icon>double_arrow</mat-icon>
+      <span>Join</span>
+    </button>
+  </div>
+
+</div>
+
+<div class="input-bar elevation-background mat-elevation-z6" *ngIf="currentChat"
+     [ngClass]="{ 'full-width': screenWidth < 640 || !showRightPanel, hidden: !currentChat }">
+
+  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+
+    <mat-form-field fxFlex="1 1 100%">
+      <input matInput placeholder="{{ircClient.config.nick}}  &rarr;  {{chat().info.name}}" class="message-input"
+             fxFlex="1 1 100%"
+             maxlength="300"
+             [ngxTribute]="tributeOptions" [menuContainer]="mentionContainer"
+             [(ngModel)]="currentChat.input.text"
+             (keydown.enter)="onEnterKey($event)"
+             (blur)="onTextInputBlur($event)"
+             (focus)="onTextInputFocus($event)"
+             (keydown)="onTextInputKeyDown($event)"
+             #messageInput>
+    </mat-form-field>
+    <button mat-icon-button matSuffix (click)="onYouTubeSearch($event)">
+      <mat-icon>music_note</mat-icon>
+    </button>
+    <button mat-icon-button matSuffix (click)="onOpenEmojiClick($event)" *ngIf="!deviceService.isMobile()">
+      <mat-icon>sentiment_satisfied_alt</mat-icon>
+    </button>
+    <button mat-icon-button matSuffix fxAlign="end" (click)="onEnterKey($event)">
+      <mat-icon>send</mat-icon>
+    </button>
+
+  </div>
+
+  <div #mentionContainer class="mention-container theme-background"></div>
+
+</div>

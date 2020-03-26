@@ -1,0 +1,40 @@
+<!--
+<iframe class="video-frame"
+        width="240" height="135"
+        src="https://www.youtube.com/embed/C8QJmI_V3j4?autoplay=1&controls=0&enablejsapi=1"
+        autoplay="1" controls="0" enablejsapi="1"
+        frameborder="0" allowfullscreen></iframe>
+-->
+<div class="video-frame theme-border-primary mat-elevation-z6" [ngClass]="{hidden: videoId == null, maximized: !isMinimized, 'no-margin': !hasMargin}">
+  <div id="youtube-player"></div>
+  <div class="overlay" *ngIf="!isFullScreen && isMinimized"
+       matRipple matRippleColor="rgba(255,255,255,0.3)"
+       [matMenuTriggerFor]="playlistMenu"></div>
+</div>
+<button *ngIf="!isFullScreen && !isMinimized" class="menu-button" color="primary" [ngClass]="{hidden: videoId == null, 'no-margin': !hasMargin}"
+        mat-mini-fab [matMenuTriggerFor]="playlistMenu">
+  <mat-icon>settings</mat-icon>
+</button>
+
+<mat-menu #playlistMenu="matMenu" xPosition="after" yPosition="above">
+  <button mat-menu-item *ngIf="playState == PlayState.PLAYING" (click)="onMenuControlPause()">
+    <mat-icon color="primary">pause</mat-icon>
+    <span i18n="@@pause">Pause</span>
+  </button>
+  <button mat-menu-item *ngIf="playState == PlayState.PAUSED" (click)="onMenuControlPlay()">
+    <mat-icon color="primary">play_arrow</mat-icon>
+    <span i18n="@@play">Play</span>
+  </button>
+  <button mat-menu-item *ngIf="isMinimized" (click)="onMenuControlExpand()">
+    <mat-icon color="primary">fullscreen</mat-icon>
+    <span i18n="@@enlarge">Enlarge</span>
+  </button>
+  <button mat-menu-item *ngIf="!isMinimized" (click)="onMenuControlMinimize()">
+    <mat-icon color="primary">fullscreen_exit</mat-icon>
+    <span i18n="@@shrink">Shrink</span>
+  </button>
+  <button mat-menu-item (click)="onMenuControlClose()">
+    <mat-icon color="primary">close</mat-icon>
+    <span i18n="@@close">Close</span>
+  </button>
+</mat-menu>

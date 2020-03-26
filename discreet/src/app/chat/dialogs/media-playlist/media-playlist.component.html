@@ -1,0 +1,36 @@
+<h2 mat-dialog-title class="title theme-color-primary">
+  <mat-icon>music_video</mat-icon>
+  <span i18n="@@sharedVideos">Shared videos</span>
+</h2>
+<mat-dialog-content class="content">
+  <div *ngFor="let user of users | callback: filterCallback">
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <h3 fxFlex="1 0 0" class=" theme-color-accent">
+        {{user.name}}
+      </h3>
+      <button mat-flat-button
+              [color]="followingUser === user ? 'accent' : ''"
+              (click)="onFollowUserClick(user)">
+        <span *ngIf="followingUser === user" i18n="@@following">&#x2714; Follow</span>
+        <span *ngIf="followingUser !== user" i18n="@@follow">Follow</span>
+      </button>
+    </div>
+    <div *ngFor="let media of user.playlist" fxLayout="row" fxLayoutAlign="start stretch">
+      <img class="media-image" [src]="media.thumbnail_url" height="56"/>
+      <span class="media-title" fxFlex="1 1 0">{{media.title}}</span>
+      <div fxLayout="column" fxLayoutAlign="center center">
+        <button mat-icon-button [mat-dialog-close]="media">
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+        <!--
+        <button mat-icon-button>
+          <mat-icon>link</mat-icon>
+        </button>
+        -->
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close cdkFocusInitial i18n="@@close">Close</button>
+</mat-dialog-actions>

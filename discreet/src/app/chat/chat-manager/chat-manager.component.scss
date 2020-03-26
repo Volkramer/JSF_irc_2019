@@ -1,0 +1,280 @@
+$input-bar-height: 64px;
+
+:host {
+  display: flex;
+  font-size: 110%;
+  flex-direction: column;
+  align-content: stretch;
+  justify-content: stretch;
+  width: 100%;
+  height: calc(100% - #{$input-bar-height});
+}
+
+.mat-drawer {
+  transform: none !important;
+}
+
+.hidden {
+  display: none !important;
+}
+
+cdk-virtual-scroll-viewport button mat-icon.first {
+  margin-left: 6px;
+}
+cdk-virtual-scroll-viewport button span {
+  display: inline-block;
+  width: calc(162px - 16px); /* 16px is the scrollbar width - should not be considered on mobile */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.container {
+  position: relative;
+}
+
+.cover {
+  width: 100%;
+  margin-right: 240px;
+  .face {
+    margin: 32px;
+    width: auto;
+    height: auto;
+    font-size: 1000%;
+    opacity: 0.2;
+  }
+}
+
+app-messages-window {
+  width: 100%;
+  margin-right: 240px;
+  transition: margin-right .3s ease-in-out;
+}
+.message-input {
+  font-family: 'Fira Code', monospace !important;
+}
+
+.input-bar {
+  position: relative;
+  display: block;
+  z-index: 1;
+  max-width: 100vw;
+  padding-left: 8px;
+  padding-right: 8px;
+  height: $input-bar-height;
+  margin-right: 240px;
+  transition: margin-right .3s ease-in-out;
+  mat-form-field {
+    margin-top: 8px;
+  }
+  button {
+    margin-bottom: 10px;
+  }
+}
+.input-bar.full-width {
+  margin-right: 0;
+}
+
+.action-buttons {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.user-menu-title {
+/*  color: $accent;*/
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.users-list {
+  border: 0;
+  border-left: solid 1px;
+  font-size: 100%;
+  z-index: 100;
+  position: absolute;
+  transition: margin-right .3s ease-in-out;
+  right: 0;
+  opacity: 0.95;
+  width: 240px;
+  height: calc(100% + #{$input-bar-height});
+  min-width: 240px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+.v-scroll {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.v-scroll button {
+  padding-left: 12px;
+}
+
+.conversations-list {
+  border: 0;
+  border-left: solid 1px;
+  z-index: 100;
+  position: absolute;
+  transition: margin-right .3s ease-in-out;
+  right: 0;
+  opacity: 0.95;
+  width: 240px;
+  height: calc(100% + #{$input-bar-height});
+  min-width: 240px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.users-list button.user {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  width: 100%;
+  font-size: 100%;
+  text-align: left; /* IE / Edge compatibility */
+  text-align: start;
+  .mat-icon {
+    margin-left: 4px;
+    margin-right: 4px;
+    opacity: 0.9;
+  }
+}
+.users-list button.is-away {
+  opacity: 0.4;
+}
+
+.users-list .title, .conversations-list .title {
+/*  color: $primary;*/
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 42px;
+  line-height: 42px;
+  vertical-align: middle;
+}
+.conversations-list {
+  .chat-type {
+    margin-top: 16px;
+    margin-left: 10px;
+/*    color: $accent;*/
+    font-weight: 600;
+    font-size: 90%;
+    text-transform: uppercase;
+  }
+  .title {
+    padding-left: 0;
+  }
+  .chat-row {
+    position: relative;
+    .notifications-off-badge {
+      z-index: 10;
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      width: 24px;
+      height: 24px;
+      opacity: 0.35;
+    }
+    .chat-button {
+      margin-top: 16px;
+      margin-right: 16px;
+    }
+    .chat-button-menu {
+      margin-top: 16px;
+    }
+  }
+}
+.users-list .search-field {
+  height: 46px;
+  line-height: 46px;
+  width: 100%;
+  border-bottom: 1px solid;
+  input[type="text"] {
+    border: 0;
+    font-size: 100%;
+    width: 100%;
+  }
+}
+
+.full-width {
+  margin-right: 0 !important;
+}
+.right-panel-show {
+  margin-right: 0 !important;
+}
+.right-panel-hide {
+  margin-right: -240px !important;
+}
+
+.hidden {
+  display: none;
+}
+
+.statusOverlay {
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background-color: rgba(0,0,0,0.8);
+  padding: 12px;
+  margin-right: 240px;
+  margin-bottom: $input-bar-height;
+  transition: margin-right .3s ease-in-out;
+  .tool-bar {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 32px;
+    button {
+      width: 80px;
+    }
+  }
+}
+
+@media only screen and (max-device-width: 640px) {
+  /* Styles */
+  app-messages-window {
+    margin-right: 0;
+  }
+  .users-list {
+    margin-right: -240px;
+  }
+  .conversations-list {
+    margin-right: -240px;
+  }
+  .statusOverlay {
+    margin-right: 0;
+  }
+}
+/* break point for material toolbar (from 64px height to 56px) */
+@media only screen and (max-device-width: 599px) { // small screen
+  :host {
+    height: calc(100% - #{$input-bar-height});
+    font-size: 85%;
+  }
+  .input-bar {
+    font-size: 140%;
+  }
+}
+@media only screen and (max-device-width: 1024px) {
+  :host {
+    font-size: 90%;
+  }
+  .input-bar {
+    font-size: 130%;
+  }
+}
+@media only screen and (max-device-width: 1280px) {
+  :host {
+    font-size: 95%;
+  }
+  .input-bar {
+    font-size: 120%;
+  }
+}
