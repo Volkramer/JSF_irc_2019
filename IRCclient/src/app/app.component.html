@@ -1,0 +1,11 @@
+<ul id="messages">
+  <li *ngFor="let message of messages">
+    {{ message }}
+  </li>
+</ul>
+<form action="">
+  <input #newMessage (keyup.enter)="sendMessage(newMessage)" />
+  <button (click)="sendMessage(newMessage)">
+    Send
+  </button>
+</form>

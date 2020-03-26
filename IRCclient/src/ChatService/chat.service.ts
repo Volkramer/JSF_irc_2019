@@ -1,0 +1,27 @@
+import { Observable, observable } from 'rxjs';
+import * as io from 'socket.io-client';
+
+export class ChatService {
+  private url = 'http://localhost:3000';
+  private socket;
+
+  constructor() {
+    this.socket = io(this.url);
+  }
+
+  public sendMessage(message) {
+    this.socket.emit('new-message', message);
+  }
+
+  public getMessage = () => {
+    const observable = new Observable(observer => {
+      this.socket.on('new-message', data => {
+        observer.next(data);
+      });
+      return () => {
+        this.socket.disconnect();
+      };
+    });
+    return observable;
+  };
+}
