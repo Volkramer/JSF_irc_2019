@@ -12,17 +12,22 @@ http.listen(3000, function() {
 });
 
 io.on('connection', function(socket) {
-  var address = socket.request.connection.remoteAddress;
-  var socketID = socket.id;
-  user = new User(socket, 'anonymous');
+  var user = new User(socket, 'anonymous');
+  var address = user.socket.request.connection.remoteAddress;
+  var socketID = user.socket.id;
+
+  users.push(user);
   console.log('user ' + address + ' connected. Socket ID: ' + socketID);
 
   socket.on('nickname', function(nickname) {
     for (let i = 0; i < users.length; i++) {
       if (users[i].socket.id === socket.id) {
         users[i].nickname = nickname;
+        user.nickname = nickname;
+        console.log(
+          'user ' + user.socket.id + 'change his nickname for ' + nickname
+        );
       }
-      return;
     }
   });
 
@@ -30,13 +35,16 @@ io.on('connection', function(socket) {
     for (let i = 0; i < channels.length; i++) {
       if (channels[i].name === channelName) {
         channels[i].addUser(user);
+        console.log(channels);
+        console.log('\n');
+        return;
       }
-      return;
     }
     channel = new Channel(channelName, user);
-    channel.addUser(user);
     channels.push(channel);
+    channel.addUser(user);
     console.log(channels);
+    console.log('\n');
   });
 
   socket.on('disconnect', function() {

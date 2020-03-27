@@ -15,7 +15,14 @@ export class AppComponent implements OnInit {
 
   sendMessage(newMessage) {
     this.message = newMessage.value;
-    this.chatService.sendMessage(this.message);
+    var param = this.message.split(' ')[1];
+    if (this.message.startsWith('/join')) {
+      this.chatService.joinChannel(param);
+    } else if (this.message.startsWith('/nick')) {
+      this.chatService.newNickname(param);
+    } else {
+      this.chatService.sendMessage(this.message);
+    }
     newMessage.value = '';
   }
 
