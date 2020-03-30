@@ -1,2 +1,2 @@
-node_modules
+/IRCclient/node_modules
 .prettierrc.js
