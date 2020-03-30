@@ -13,6 +13,14 @@ export class ChatService {
     this.socket.emit('new-message', message);
   }
 
+  public joinChannel(channelName) {
+    this.socket.emit('join-channel', channelName);
+  }
+
+  public newNickname(nickname) {
+    this.socket.emit('nickname', nickname);
+  }
+
   public getMessage = () => {
     const observable = new Observable(observer => {
       this.socket.on('new-message', data => {
