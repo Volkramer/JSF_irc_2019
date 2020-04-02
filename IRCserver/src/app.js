@@ -14,9 +14,12 @@ app.use(imports.cors()) // server hosted on different depend --> CARE (need good
 require('./policies/passport') // this is for passport authen
 require('./routes')(app) // attach all the different endpoint to the apps
 
+const http = require('http').createServer(app)
+
 sequelize.sync() // sync sequelize with the server {force : true} = deleting all data
     .then(() => {
-        app.listen(imports.config.portHttp, imports.config.ip)
+        app.listen(imports.config.portHttp);
+        // app.listen(imports.config.portHttp, imports.config.ip)
         console.log('####################### END INIT DB #######################\n\n')
         console.log(`Server started on port ${imports.config.portHttp}... let's start working...`)
     })

@@ -3,7 +3,7 @@ const path = require('path') // import function of path (__dirname)
 module.exports = { // basic config for the server
     ip: "localhost", // Change IP for real server here
     portHttps: 443,
-    portHttp: 8080,
+    portHttp: 3000,
     db: { // maybe i should use mysql instead
         database: process.env.DB_NAME || 'tabtracker', // name of DB
         user: process.env.DB_USER || 'tabtracker',
