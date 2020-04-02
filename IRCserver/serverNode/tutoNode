@@ -1,0 +1,217 @@
+### Basic config for route API :
+
+module.exports = (app) => {
+    app.get('/url',
+        isAuthenticated,
+        UrlsController.index)
+    app.get('/url/:urlId',
+        isAuthenticated,
+        UrlsController.getUrl)
+    app.put('/url/:urlId',
+        UrlsController.put)
+    app.delete('/url/:urlId',
+        isAuthenticated,
+        UrlsController.delete)
+    app.post('/url',
+        isAuthenticated,
+        UrlsController.post)
+    app.put('/vlab/:urlId',
+        isAuthenticated,
+        UrlsController.changePwd)
+}
+
+### Policies
+Passport :
+-Extract token from Bearer (JWTStrategy)
+-Find the user in DB with the jwtPayload.id
+-return Error() or User
+1. isAuthenticated :
+- use passport.authenticate(..)
+- return access with user or not
+2. AuthenticationControllerPolicy (middleware between controller)
+-use a shema 
+-use of Joi to validate
+-return the error depending on the key or validation to go to next instruction
+
+### Curl with cookie
+Agent:
+axios(urlO2G, {
+  httpsAgent: new https.Agent({rejectUnauthorized: false})
+}, {
+  method: 'get'
+})
+.then(async response => {
+O2Auth:
+let basicAuth = "\"Authorization: Basic " + new Buffer('admin:' + url.password).toString('base64') + "\""
+let cmdCURL = 'curl -X GET -k -H ' + basicAuth + 
+' -i "' + urlO2G + '/api/rest/authenticate?version=1.0"' + ' --cookie coockies.txt --cookie-jar coockies.txt';
+Post:
+let cmdCURL = 'curl -X POST -k -H "Content-Type: application/json"' + ' -i "' + urlO2G 
++ '/api/rest/1.0/sessions" --data ' + "'" + '{ "applicationName":"' 
++ sips[0].vlabname.toLowerCase() + '"}' + "'" 
++ ' --cookie coockies.txt --cookie-jar coockies.txt'
+Put:
+let cmdCURL = 'curl -X PUT -k -H "Content-Type: application/json" -i "' 
++ urlO2G + '/api/rest/1.0/pbxs/1/instances/Subscriber/"' + sip.name + '/' + ' --data ' +
+"'" + '{ "attributes":[{"name": "SIP_Passwd","value": [ "' + sip.passwd + '" ]}]}' + "'" 
++ ' --cookie coockies.txt --cookie-jar coockies.txt'
+
+### SSH & EXEC
+const cmdSSH = "ssh oneadmin@10.1.2.150 /var/lib/one/scripts/changeO2Gpasswd.sh "
++ o2g.urltype + " " + o2g.password
+await exec(cmdSSH, (err, stdout, stderr) => {
+  if (err) {
+    console.log(err)
+    return
+  }
+  console.log(stdout)
+})
+
+### GENERATE GENERATOR
+const generator = require('generate-password')
+newUrl.password = await generator.generate({
+  length: 8,
+  numbers: true
+})
+
+### LOG
+const winston = require('winston')
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  defaultMeta: { service: 'user-service'},
+  transports: [
+    new winston.transports.File({ filename: 'error.log', level: 'error'}),
+    new winston.transports.File({ filename: 'combined.log'})
+  ]
+})
+logger.info(vlab)
+
+### MAIL
+const nodemailer = require('nodemailer')
+const transporter = nodemailer.createTransport({
+  pool: true,
+  host: "vlab.dspp.al-enterprise.com",
+  port: 465,
+  secure: true, // use TLS
+  auth: {
+    user: 'support@vlab.dspp.al-enterprise.com',
+    pass: '6JQY^iN(^+7i'
+  }
+})
+var message = "Greetings " + user.firstname + "\n" +
+"We are writting to you to let you know that your DSPP VLAB account got archived.\n"
+"We hope you had fun with it, and we can't wait to see the result of your project!\n"
+var mailOpt = {
+  from: 'support@vlab.dspp.al-enterprise.com',
+  to: user.email,
+  subject: 'AAPP Program - Archive User',
+  text: message
+}
+transporter.sendMail(mailOpt, function(error, info) {
+  if (error) {
+    console.log(error)
+  } else {
+    console.log('Email sent: ' + info.response)
+  }
+})
+
+### TIME
+const endlicence = Date.parse(vlab.endlicence)
+const timelicence = endlicence - date
+const nbdays = timelicence / (1000 * 60 * 60 * 24) // reduce days by one if nb days < vlab.dayleft - 1
+
+### JSON
+const temp = JSON.parse(JSON.stringify(data.VM.TEMPLATE.SNAPSHOT))
+
+### DELAY
+const delay = (time, callback) => {
+  setInterval(callback, time*1000)
+}
+
+const populateDB = async () => {
+  delay(3, () => {
+    module.FunctionName()
+  })
+}
+
+### MAKE module
+// const winston = require('winston')
+
+// const logger = module.functionName({
+    ...
+//   })
+
+// const log = {
+//   logger: logger
+// }
+
+// module.exports = log
+
+
+### CONTROLLERS
+--> SQLITE
+const vm = await Vm.create(req.body)
+const vm = await Vm.findByPk(req.params.vmId)
+const vms = await Vm.findAll({
+   limit: 100
+})
+const vm = await Vm.update(req.body, {
+  where: {
+    id: req.params.vmId
+  }
+})
+const vmsUser = await VmUser.findAll({
+  where: {
+    UserId: UserId
+  },
+  include: [
+    {
+    model: Vm
+    }
+  ]
+})
+  .map(vmUser => vmUser.toJSON())
+  .map(vmUser => _.extend(
+    {},
+    vmUser.Vm,
+    vmUser
+  ))
+res.send(_.uniqBy(vmsUser, vmUser => vmUser.VmId)) // uniqBy
+await vmUser.destroy()
+
+
+Basic controller template
+---
+const {
+  Vm,
+  VmVlab
+} = require('../../models')
+const _ = require('lodash')
+  async delete(req, res) {
+    try {
+      const UserId = req.user.id
+      const { vmUserId } = req.params
+
+      const vmUser = await VmUser.findOne({
+        where: {
+          id: vmUserId,
+          UserId: UserId
+        }
+      })
+      if (!vmUser) {
+        return res.status(403).send({
+          error: 'you do nat have acces to this vmUser'
+        })
+      }
+      await vmUser.destroy()
+      res.send(vmUser)
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occured while trying to delete the url user'
+      })
+    }
+  }
+---
+
+### FOR CERTIFICAT : PUT IN THE SERVER A FOLDER FOR IT 
