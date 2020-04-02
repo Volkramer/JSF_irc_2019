@@ -215,3 +215,40 @@ const _ = require('lodash')
 ---
 
 ### FOR CERTIFICAT : PUT IN THE SERVER A FOLDER FOR IT 
+
+
+For repair SQLITE:
+npm i -g sqlite3
+npm -g install node-pre-gyp --fallback-to-build
+npm uninstall sqlite3 --save
+dans server
+npm install
+npm install --save sqlite3
+
+
+AXIOS:
+export default () => { // give back a connector
+  return axios.create({ // axios obj that point to the URL
+    baseURL: 'http://localhost:80/',
+    headers: {
+      Authorization: Bearer ${store.state.token}
+    }
+  })
+} // Heading our differents end point
+
+FORMATTED DATE:
+formatted_date() {
+      var result = "";
+      var d = new Date();
+      result +=
+        d.getDate() +
+        "/" +
+        (d.getMonth() + 1) +
+        "/" +
+        d.getFullYear() +
+        " at " +
+        d.getHours() +
+        ":" +
+        d.getMinutes();
+      return result;
+    },
