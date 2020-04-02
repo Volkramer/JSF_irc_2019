@@ -1,6 +1,7 @@
 var io = require('socket.io')(http);
-var Channel = require('./channels.js');
-var User = require('./users.js');
+var Channel = require('./objects/channels.js');
+var User = require('./objects/users.js');
+var Message = require('./objects/messages.js');
 
 var users = [];
 var channels = [];
@@ -28,6 +29,7 @@ io.on('connection', function(socket) {
   socket.on('join-channel', function(channelName) {
     for (let i = 0; i < channels.length; i++) {
       if (channels[i].name === channelName) {
+        socket.join(channels[i].name);
         channels[i].addUser(user);
         console.log(channels);
         console.log('\n');
@@ -36,6 +38,7 @@ io.on('connection', function(socket) {
     }
     channel = new Channel(channelName, user);
     channels.push(channel);
+    socket.join(channel.name);
     channel.addUser(user);
     console.log(channels);
     console.log('\n');
@@ -50,8 +53,25 @@ io.on('connection', function(socket) {
     console.log('user ' + socketID + ' disconnected.');
   });
 
-  socket.on('new-message', message => {
-    io.emit('new-message', message);
-    console.log(message);
+  socket.on('new-message', data => {
+    channel = function() {
+      for (let i = 0; i < channels.length; i++) {
+        if (channels[i].name === data.channelName) {
+          return channels[i];
+        }
+      }
+    };
+    user = function() {
+      for (let i = 0; i < channel.users.length; i++) {
+        if (channel.users[i].nickname === data.nickname) {
+          return channel.users[i];
+        }
+      }
+    };
+    message = new Message(data.content, user, channel);
+    io.to(message.channel.name).emit(
+      'new-message',
+      message.dateTime + ' ' + message.user.nickname + ': ' + message.content
+    );
   });
 });
