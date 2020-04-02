@@ -1,7 +1,6 @@
 const { User } = require('../../models')
 const jwt = require('jsonwebtoken') // for token authen
 const config = require('../../config/config')
-const Promise = require('bluebird')
 const crypto = require('crypto')
 
 function jwtSignUser(user) { // Override the function who sign a user obj using jwt library to get back a token
