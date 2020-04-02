@@ -1,0 +1,38 @@
+[
+  {
+    "VmId": 1,
+    "UserId": 1
+  },
+  {
+    "VmId": 2,
+    "UserId": 1
+  },
+  {
+    "VmId": 3,
+    "UserId": 1
+  },
+  {
+    "VmId": 4,
+    "UserId": 2
+  },
+  {
+    "VmId": 5,
+    "UserId": 2
+  },
+  {
+    "VmId": 6,
+    "UserId": 2
+  },
+  {
+    "VmId": 7,
+    "UserId": 3
+  },
+  {
+    "VmId": 8,
+    "UserId": 3
+  },
+  {
+    "VmId": 9,
+    "UserId": 3
+  }
+]
