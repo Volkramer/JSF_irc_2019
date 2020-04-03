@@ -3,6 +3,7 @@ const path = require('path') // app and path, relative path
 
 const folderRoutes = [
     "Authen",
+    "Channel",
     "Message",
     "User"
 ]

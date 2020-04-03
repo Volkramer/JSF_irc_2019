@@ -11,6 +11,4 @@ module.exports = (app) => {
     app.delete('/messagesuser/:messageUserId',
         isAuthenticated,
         MessagesUserController.delete)
-    app.delete('/dashboard/:messageUserId',
-        MessagesUserController.delAdmin)
 }

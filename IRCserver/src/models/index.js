@@ -11,13 +11,9 @@ const sequelize = new Sequelize( // creation of the obj sequelize --> making the
 )
 
 const folderModels = [
+    "Channel",
     "Message",
-    "Sip",
-    "Template",
-    "Url",
-    "User",
-    "Vlab",
-    "Vm"
+    "User"
 ]
 
 const isDirModels = file => {
@@ -26,7 +22,7 @@ const isDirModels = file => {
             return (false)
         }
     }
-    return(true)
+    return (true)
 }
 
 console.log('\n\n#################### START INIT MODELS ####################')
@@ -44,20 +40,20 @@ fs
         for (let i = 0; i < folderModels.length; i++) {
             if (!isDirModels(file)) {
                 fs
-                .readdirSync(path.join( __dirname, file))
-                .filter((tmp) => file !== 'index.js')
-                .forEach((tmp) => {
-                    console.log('######################## File in Folder :', tmp)
-                    console.log('Path ==>', path.join( path.join( __dirname, file), tmp))
-                    const model = sequelize.import(path.join( path.join( __dirname, file), tmp))
-                    db[model.name] = model
-                })
-            break
+                    .readdirSync(path.join(__dirname, file))
+                    .filter((tmp) => file !== 'index.js')
+                    .forEach((tmp) => {
+                        console.log('######################## File in Folder :', tmp)
+                        console.log('Path ==>', path.join(path.join(__dirname, file), tmp))
+                        const model = sequelize.import(path.join(path.join(__dirname, file), tmp))
+                        db[model.name] = model
+                    })
+                break
             }
         }
     })
 
-Object.keys(db).forEach(function (modelName) {
+Object.keys(db).forEach(function(modelName) {
     if ('associate' in db[modelName]) {
         db[modelName].associate(db)
     }

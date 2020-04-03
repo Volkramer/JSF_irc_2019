@@ -1,0 +1,21 @@
+[{
+        "name": "Channel 1",
+        "createAt": "2019/01/01 10:00"
+    },
+    {
+        "name": "Channel 2",
+        "createAt": "2019/01/01 10:00"
+    },
+    {
+        "name": "Channel 3",
+        "createAt": "2019/01/01 10:00"
+    },
+    {
+        "name": "Channel 4",
+        "createAt": "2019/01/01 10:00"
+    },
+    {
+        "name": "Channel 5",
+        "createAt": "2019/01/01 10:00"
+    }
+]

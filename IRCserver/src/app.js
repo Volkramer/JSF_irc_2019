@@ -23,12 +23,3 @@ sequelize.sync() // sync sequelize with the server {force : true} = deleting all
         console.log('####################### END INIT DB #######################\n\n')
         console.log(`Server started on port ${imports.config.portHttp}... let's start working...`)
     })
-
-    
-// var app = require('express')();
-// var http = require('http').createServer(app);
-
-
-// http.listen(3000, function() {
-//   console.log('listening on port 3000');
-// });
