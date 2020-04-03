@@ -34,6 +34,7 @@ module.exports = function(io) {
         socket.on("join-channel", function(channelName) {
             for (let i = 0; i < channels.length; i++) {
                 if (channels[i].name === channelName) {
+                    socket.join(channels[i].name);
                     channels[i].addUser(user);
                     console.log(channels);
                     console.log("\n");
@@ -42,6 +43,7 @@ module.exports = function(io) {
             }
             channel = new Channel(channelName, user);
             channels.push(channel);
+            socket.join(channel.name);
             channel.addUser(user);
             console.log(channels);
             console.log("\n");
