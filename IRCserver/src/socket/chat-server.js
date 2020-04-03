@@ -1,5 +1,6 @@
 var Channel = require("./objects/channels");
-var User = require("./objects/users.js");
+var User = require("./objects/users");
+var Message = require("./objects/messages");
 
 module.exports = function(io) {
   var users = [];
@@ -28,6 +29,7 @@ module.exports = function(io) {
     socket.on("join-channel", function(channelName) {
       for (let i = 0; i < channels.length; i++) {
         if (channels[i].name === channelName) {
+          socket.join(channels[i].name);
           channels[i].addUser(user);
           console.log(channels);
           console.log("\n");
@@ -36,6 +38,7 @@ module.exports = function(io) {
       }
       channel = new Channel(channelName, user);
       channels.push(channel);
+      socket.join(channel.name);
       channel.addUser(user);
       console.log(channels);
       console.log("\n");
@@ -50,9 +53,26 @@ module.exports = function(io) {
       console.log("user " + socketID + " disconnected.");
     });
 
-    socket.on("new-message", message => {
-      io.emit("new-message", message);
-      console.log(message);
+    socket.on("new-message", data => {
+      channel = function() {
+        for (let i = 0; i < channels.length; i++) {
+          if (channels[i].name === data.channelName) {
+            return channels[i];
+          }
+        }
+      };
+      user = function() {
+        for (let i = 0; i < channel.users.length; i++) {
+          if (channel.users[i].nickname === data.nickname) {
+            return channel.users[i];
+          }
+        }
+      };
+      message = new Message(data.content, user, channel);
+      io.to(message.channel.name).emit(
+        "new-message",
+        message.dateTime + " " + message.user.nickname + ": " + message.content
+      );
     });
   });
 };
