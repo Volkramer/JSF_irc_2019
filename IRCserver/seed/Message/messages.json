@@ -1,23 +1,27 @@
 [{
         "userId": 2,
+        "channelId": 1,
         "username": "geoff",
         "message": "Bonjour",
         "createAt": "2019/06/01 17:00"
     },
     {
         "userId": 2,
+        "channelId": 1,
         "username": "geoff",
         "message": "Comment tu vas ?",
         "createAt": "2019/06/10 10:00"
     },
     {
         "userId": 3,
+        "channelId": 1,
         "username": "frederic",
         "message": "Hello",
         "createAt": "2019/06/07 18:00"
     },
     {
         "userId": 3,
+        "channelId": 1,
         "username": "frederic",
         "message": "Tres bien et toi ?",
         "createAt": "2019/06/08 14:00"

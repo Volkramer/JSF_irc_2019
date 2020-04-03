@@ -4,12 +4,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
+        channelId: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
         username: {
             type: DataTypes.STRING,
             defaultValue: null
         },
         message: DataTypes.STRING,
-        createAt: DataTypes.STRING
     })
 
     return Message

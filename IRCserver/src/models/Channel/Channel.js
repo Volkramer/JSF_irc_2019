@@ -3,8 +3,7 @@ module.exports = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
             unique: true // really important for one data / no more
-        },
-        createAt: DataTypes.STRING,
+        }
     })
 
     return Channel

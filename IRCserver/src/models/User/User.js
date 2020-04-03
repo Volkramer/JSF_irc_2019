@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
-        createAt: DataTypes.STRING
     })
 
     return User
