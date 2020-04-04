@@ -1,23 +1,23 @@
 const { Channel } = require('../../models')
 const _ = require('lodash')
+
 module.exports = {
     async index(req, res) {
         try {
-            const value = req.query.value
-            if (value == 1) {
+            let channels = null
+            const search = req.query.search
+            if (search) {
                 channels = await Channel.findAll({
                     where: {
-                        faq: true
+                        username: search
                     }
                 })
-            } else if (value == 2) {
+            } else {
                 channels = await Channel.findAll({
-                    where: {
-                        user: true
-                    }
+                    limit: 100
                 })
             }
-            res.send(_.uniqBy(channels))
+            res.send(channels)
         } catch (err) {
             res.status(500).send({
                 err: 'An error has occured while trying to fetch all the Message'
@@ -58,10 +58,24 @@ module.exports = {
                 })
             }
             await channel.destroy()
-            res.send(message)
+            res.send(channel)
         } catch (err) {
             res.status(500).send({
                 err: 'An error has occured while trying to delete the Vlab User'
+            })
+        }
+    },
+    async update(req, res) {
+        try {
+            const channel = await Channel.update(req.body, {
+                where: {
+                    id: req.params.channelId
+                }
+            })
+            res.send(channel)
+        } catch (err) {
+            res.status(500).send({
+                err: 'An error has occured while trying to update the user'
             })
         }
     }

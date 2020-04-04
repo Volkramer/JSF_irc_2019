@@ -5,21 +5,31 @@ const Promise = require('bluebird')
 const crypto = require('crypto')
 
 function jwtSignUser(user) { // Override the function who sign a user obj using jwt library to get back a token
-    const ONE_WEEK = 60 * 60 * 8
+    const ONE_MONTHS = 60 * 60 * 24 * 31
     return jwt.sign(user, config.authentication.jwtSecret, {
-        expiresIn: ONE_WEEK
+        expiresIn: ONE_MONTHS
     })
 }
 
 module.exports = {
     async register(req, res) {
         try {
-            const user = await User.create(req.body)
-            const userJson = user.toJSON()
-                //res.send({
-                //user: userJson,
-                //token: jwtSignUser(user)
-                //})
+            const newUser = {
+                admin: false,
+                username: req.body.username,
+                password: "",
+                active_hash: "",
+                salt: "",
+            }
+            newUser.salt = crypto.randomBytes(16).toString(`hex`)
+            newUser.active_hash = crypto.pbkdf2Sync(req.body.password, newUser.salt,
+                1000, 64, `sha512`).toString(`hex`)
+            const user = await User.create(newUser)
+                // const userJson = user.toJSON()
+                //     //res.send({
+                //     //user: userJson,
+                //     //token: jwtSignUser(user)
+                //     //})
             res.send(user)
         } catch (err) {
             res.status(400).send({ // send type error

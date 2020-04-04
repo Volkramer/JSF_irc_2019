@@ -3,21 +3,20 @@ const _ = require('lodash')
 module.exports = {
     async index(req, res) {
         try {
-            const value = req.query.value
-            if (value == 1) {
+            let messages = null
+            const search = req.query.search
+            if (search) {
                 messages = await Message.findAll({
                     where: {
-                        faq: true
+                        name: search
                     }
                 })
-            } else if (value == 2) {
+            } else {
                 messages = await Message.findAll({
-                    where: {
-                        user: true
-                    }
+                    limit: 100
                 })
             }
-            res.send(_.uniqBy(messages))
+            res.send(messages)
         } catch (err) {
             res.status(500).send({
                 err: 'An error has occured while trying to fetch all the Message'
@@ -62,6 +61,20 @@ module.exports = {
         } catch (err) {
             res.status(500).send({
                 err: 'An error has occured while trying to delete the Vlab User'
+            })
+        }
+    },
+    async update(req, res) {
+        try {
+            const message = await Message.update(req.body, {
+                where: {
+                    id: req.params.messageId
+                }
+            })
+            res.send(message)
+        } catch (err) {
+            res.status(500).send({
+                err: 'An error has occured while trying to update the user'
             })
         }
     }

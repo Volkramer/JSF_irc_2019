@@ -48,7 +48,6 @@ module.exports = {
                 password: "",
                 active_hash: "",
                 salt: "",
-                createAt: new Date()
             }
             newUser.salt = crypto.randomBytes(16).toString(`hex`)
             newUser.active_hash = crypto.pbkdf2Sync(req.body.password, newUser.salt,
@@ -83,7 +82,17 @@ module.exports = {
     },
     async put(req, res) {
         try {
-            const user = await User.update(req.body, {
+            const newUser = {
+                admin: req.body.admin,
+                username: req.body.username,
+                password: "",
+                active_hash: "",
+                salt: "",
+            }
+            newUser.salt = crypto.randomBytes(16).toString(`hex`)
+            newUser.active_hash = crypto.pbkdf2Sync(req.body.password, newUser.salt,
+                1000, 64, `sha512`).toString(`hex`)
+            const user = await User.update(newUser, {
                 where: {
                     id: req.params.userId
                 }

@@ -1,0 +1,17 @@
+[{
+        "ChannelId": 1,
+        "MessageId": 1
+    },
+    {
+        "ChannelId": 1,
+        "MessageId": 2
+    },
+    {
+        "ChannelId": 1,
+        "MessageId": 3
+    },
+    {
+        "ChannelId": 1,
+        "MessageId": 4
+    }
+]

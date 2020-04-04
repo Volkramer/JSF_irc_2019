@@ -5,6 +5,9 @@ module.exports = (app) => {
     app.get('/messagesuser',
         isAuthenticated,
         MessagesUserController.index)
+    app.get('/messagesuser/:userId',
+        isAuthenticated,
+        MessagesUserController.getMessagesUser)
     app.post('/messagesuser',
         isAuthenticated,
         MessagesUserController.post)
