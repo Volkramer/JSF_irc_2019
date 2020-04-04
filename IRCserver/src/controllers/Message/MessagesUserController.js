@@ -1,5 +1,6 @@
 const {
     Message,
+    User,
     MessageUser
 } = require('../../models')
 const _ = require('lodash')
@@ -7,14 +8,40 @@ const _ = require('lodash')
 module.exports = {
     async index(req, res) {
         try {
-            const UserId = req.user.id
+            const messagesUser = await MessageUser.findAll({
+                    include: [{
+                            model: Message
+                        },
+                        {
+                            model: User
+                        }
+                    ]
+                })
+                .map(messageUser => messageUser.toJSON())
+                .map(messageUser => _.extend({},
+                    messageUser.Message,
+                    messageUser
+                ))
+            res.send(messagesUser)
+        } catch (err) {
+            res.status(500).send({
+                err: 'An error has occured while trying to get the Messages Users'
+            })
+        }
+    },
+    async getMessagesUser(req, res) {
+        try {
             const messagesUser = await MessageUser.findAll({
                     where: {
-                        UserId: UserId
+                        UserId: req.params.userId
                     },
                     include: [{
-                        model: Message
-                    }]
+                            model: Message
+                        },
+                        {
+                            model: User
+                        }
+                    ]
                 })
                 .map(messageUser => messageUser.toJSON())
                 .map(messageUser => _.extend({},
@@ -24,14 +51,13 @@ module.exports = {
             res.send(_.uniqBy(messagesUser, messageUser => messageUser.MessageId))
         } catch (err) {
             res.status(500).send({
-                err: 'An error has occured while trying to get the Message User'
+                err: 'An error has occured while trying to get the Messages User'
             })
         }
     },
     async post(req, res) {
         try {
-            const UserId = req.user.id
-            const { MessageId } = req.body
+            const { MessageId, UserId } = req.body
             const messageUser = await MessageUser.create({
                 MessageId: MessageId,
                 UserId: UserId
@@ -45,13 +71,11 @@ module.exports = {
     },
     async delete(req, res) {
         try {
-            const UserId = req.user.id
             const { messageUserId } = req.params
 
             const messageuser = await MessageUser.findOne({
                 where: {
-                    id: messageUserId,
-                    UserId: UserId
+                    id: messageUserId
                 }
             })
             if (!messageuser) {

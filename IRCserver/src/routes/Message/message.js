@@ -2,16 +2,19 @@ const MessageController = require('../../controllers/Message/MessagesController'
 const isAuthenticated = require('../../policies/isAuthenticated')
 
 module.exports = (app) => {
-    app.get('/dashboard',
+    app.get('/messages',
         isAuthenticated,
         MessageController.index)
-    app.get('/message/:messageId',
+    app.get('/messages/:messageId',
         isAuthenticated,
         MessageController.getMessage)
-    app.post('/message/:messageId',
+    app.post('/messages',
         isAuthenticated,
         MessageController.post)
-    app.delete('/message/:messageId',
+    app.delete('/messages/:messageId',
         isAuthenticated,
         MessageController.delete)
+    app.put('/messages/:messagelId',
+        isAuthenticated,
+        MessageController.update)
 }

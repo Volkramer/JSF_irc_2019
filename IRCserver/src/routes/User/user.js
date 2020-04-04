@@ -8,13 +8,13 @@ module.exports = (app) => {
     app.get('/users/:userId',
         isAuthenticated,
         UsersController.getUser)
-    app.put('/users/:userId',
-        isAuthenticated,
-        UsersController.put)
     app.post('/users',
         isAuthenticated,
         UsersController.post)
     app.delete('/users/:userId',
         isAuthenticated,
         UsersController.delete)
+    app.put('/users/:userId',
+        isAuthenticated,
+        UsersController.put)
 }

@@ -5,6 +5,7 @@ const {
     MessageUser,
     Channel,
     ChannelUser,
+    ChannelMessage
 } = require('../src/models')
 
 /* BONUS FOR SEEDING AND AUTO ADMIN ACCOUNT WITH HASH */
@@ -18,6 +19,7 @@ const messagesUsers = require('./Message/messagesUsers.json')
 
 const channels = require('./Channel/channels.json')
 const channelsUsers = require('./Channel/channelsUsers.json')
+const channelsMessages = require('./Channel/channelsMessages')
 
 sequelize.sync({ force: true })
     .then(async function() {
@@ -53,6 +55,11 @@ sequelize.sync({ force: true })
         await Promise.all(
             channelsUsers.map(channelsUser => {
                 ChannelUser.create(channelsUser)
+            })
+        )
+        await Promise.all(
+            channelsMessages.map(channelsMessage => {
+                ChannelMessage.create(channelsMessage)
             })
         )
     })

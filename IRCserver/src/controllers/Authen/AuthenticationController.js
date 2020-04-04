@@ -14,12 +14,22 @@ function jwtSignUser(user) { // Override the function who sign a user obj using 
 module.exports = {
     async register(req, res) {
         try {
-            const user = await User.create(req.body)
-            const userJson = user.toJSON()
-                //res.send({
-                //user: userJson,
-                //token: jwtSignUser(user)
-                //})
+            const newUser = {
+                admin: false,
+                username: req.body.username,
+                password: "",
+                active_hash: "",
+                salt: "",
+            }
+            newUser.salt = crypto.randomBytes(16).toString(`hex`)
+            newUser.active_hash = crypto.pbkdf2Sync(req.body.password, newUser.salt,
+                1000, 64, `sha512`).toString(`hex`)
+            const user = await User.create(newUser)
+                // const userJson = user.toJSON()
+                //     //res.send({
+                //     //user: userJson,
+                //     //token: jwtSignUser(user)
+                //     //})
             res.send(user)
         } catch (err) {
             res.status(400).send({ // send type error
