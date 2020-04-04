@@ -5,9 +5,9 @@ const Promise = require('bluebird')
 const crypto = require('crypto')
 
 function jwtSignUser(user) { // Override the function who sign a user obj using jwt library to get back a token
-    const ONE_WEEK = 60 * 60 * 8
+    const ONE_MONTHS = 60 * 60 * 24 * 31
     return jwt.sign(user, config.authentication.jwtSecret, {
-        expiresIn: ONE_WEEK
+        expiresIn: ONE_MONTHS
     })
 }
 
