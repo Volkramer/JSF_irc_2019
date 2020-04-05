@@ -4,76 +4,104 @@ const {
     Message,
     MessageUser,
     Channel,
-    ChannelUser
+    ChannelUser,
 } = require('../models')
 
-module.exports = function(io) {
-    var users = [];
-    var channels = [];
+const MessagesController = require('../controllers/Message/MessagesController')
 
-    io.on("connection", function(socket) {
-        var user = new User(socket, "anonymous");
-        var address = user.socket.request.connection.remoteAddress;
-        var socketID = user.socket.id;
+module.exports = function (io) {
+    var channels = []
 
-        users.push(user);
-        console.log("user " + address + " connected. Socket ID: " + socketID);
+    io.on('connection', function (socket) {
+        var address = socket.request.connection.remoteAddress
+        var socketID = socket.id
 
-        socket.on("nickname", function(nickname) {
-            for (let i = 0; i < users.length; i++) {
-                if (users[i].socket.id === socket.id) {
-                    users[i].nickname = nickname;
-                    user.nickname = nickname;
-                    console.log(
-                        "user " + user.socket.id + "change his nickname for " + nickname
-                    );
-                }
+        console.log('user ' + address + ' connected. Socket ID: ' + socketID)
+
+        socket.on('nickname', function (data) {
+            // ### TODO ###
+            // find data.userID
+            // change nickname
+            console.log(
+                'user ' + user.socket.id + 'change his nickname for ' + nickname
+            )
+        })
+
+        socket.on('join-channel', function (data) {
+            const newChannel = {
+                name: data.name,
             }
-        });
-
-        socket.on("join-channel", function(channelName) {
-            for (let i = 0; i < channels.length; i++) {
-                if (channels[i].name === channelName) {
-                    socket.join(channels[i].name);
-                    channels[i].addUser(user);
-                    console.log(channels);
-                    console.log("\n");
-                    return;
-                }
+            const user = {
+                id: data.userId
             }
-            channel = new Channel(channelName, user);
-            channels.push(channel);
-            socket.join(channel.name);
-            channel.addUser(user);
-            console.log(channels);
-            console.log("\n");
-        });
-
-        socket.on("disconnect", function() {
-            for (let i = 0; i < users.length; i++) {
-                if (users[i].socket.id === socket.id) {
-                    users.splice(i, 1);
-                }
+            try {
+                await Channel.findAll({
+                    where: {
+                        name: newChannel.name
+                    }
+                }).then(async (data) =>{
+                    if (!data) {
+                        try {
+                            await Channel.create(newChannel).then(async (data) => {
+                                await ChannelUser.create({
+                                    ChannelId: data.id,
+                                    UserId: user.id
+                                })
+                                socket.join(newChannel.name)
+                            })    
+                        } catch (err) {
+                            console.log(err)
+                        }
+                    }
+                    else {
+                        await ChannelUser.create({
+                            ChannelId: data.id,
+                            UserId: user.id
+                        })
+                        socket.join(newChannel.name)
+                    }
+                })
+            } catch (err) {
+                console.log(err)
             }
-            console.log("user " + socketID + " disconnected.");
-        });
+        })
 
-        socket.on("new-message", async message => {
-            // const newMessage = {
-            //   "message"
-            //   "username"
-            //   "userId"
-            //   "channeId"
-            // }
-            async() => {
-                try {
-                    await MessageChannel.create(newMessage)
-                } catch (err) {
-                    console.log(err)
-                }
+        socket.on('leave-channel', (data) => {
+            //when user leave a channel remove ChannelUser entry
+
+            
+        })
+
+        socket.on('disconnect', function () {
+            console.log('user ' + socketID + ' disconnected.')
+        })
+
+        socket.on('new-message', async (data) => {
+            const newMessage = {
+                message: data.message,
+                username: data.username,
+                userId: data.userId,
+                channelId: data.channelId,
             }
-            await io.emit("new-message", message)
-            console.log(message);
-        });
-    });
-};
+
+            try {
+                await Message.create(newMessage)
+                    .then(async (data) => {
+                        await MessageUser.create({
+                            MessageId: data.id,
+                            UserId: newMessage.userId,
+                        })
+                    })
+                    .then(async (data) => {
+                        await ChannelMessage.create({
+                            MessageId: data.id,
+                            channelId: newMessage.channelId,
+                        })
+                    })
+                io.to(newMessage.channelId).emit('new-message', newMessage)
+            } catch (err) {
+                console.log(err)
+            }
+        })
+    })
+}
