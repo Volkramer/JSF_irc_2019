@@ -1,2 +1,2 @@
-/IRCclient/node_modules
-.prettierrc.js
+node_modules
+package-lock.json

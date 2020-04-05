@@ -12,12 +12,7 @@ module.exports = function(io) {
     var channels = [];
 
     io.on("connection", function(socket) {
-        var user = new User(socket, "anonymous");
-        var address = user.socket.request.connection.remoteAddress;
-        var socketID = user.socket.id;
 
-        users.push(user);
-        console.log("user " + address + " connected. Socket ID: " + socketID);
 
         socket.on("nickname", function(nickname) {
             for (let i = 0; i < users.length; i++) {
