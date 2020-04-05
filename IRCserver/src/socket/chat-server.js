@@ -5,13 +5,10 @@ const {
     MessageUser,
     Channel,
     ChannelUser,
+    ChannelMessage,
 } = require('../models')
 
-const MessagesController = require('../controllers/Message/MessagesController')
-
 module.exports = function (io) {
-    var channels = []
-
     io.on('connection', function (socket) {
         var address = socket.request.connection.remoteAddress
         var socketID = socket.id
@@ -27,36 +24,39 @@ module.exports = function (io) {
             )
         })
 
-        socket.on('join-channel', function (data) {
+        socket.on('join-channel', async (data) => {
             const newChannel = {
                 name: data.name,
             }
             const user = {
-                id: data.userId
+                id: data.userId,
             }
             try {
                 await Channel.findAll({
                     where: {
-                        name: newChannel.name
-                    }
-                }).then(async (data) =>{
-                    if (!data) {
-                        try {
-                            await Channel.create(newChannel).then(async (data) => {
-                                await ChannelUser.create({
-                                    ChannelId: data.id,
-                                    UserId: user.id
-                                })
-                                socket.join(newChannel.name)
-                            })    
+                        name: newChannel.name,
+                    },
+                }).then(async (data) => {
+                    console.log(data)
+                    if (data == undefined || data.length == 0) {
+                        console.log("Channel doesn't exist!")
+                        /* try {
+                            await Channel.create(newChannel).then(
+                                async (data) => {
+                                    await ChannelUser.create({
+                                        ChannelId: data.id,
+                                        UserId: user.id,
+                                    })
+                                    socket.join(newChannel.name)
+                                }
+                            )
                         } catch (err) {
                             console.log(err)
-                        }
-                    }
-                    else {
+                        } */
+                    } else {
                         await ChannelUser.create({
-                            ChannelId: data.id,
-                            UserId: user.id
+                            ChannelId: data[0].id,
+                            UserId: user.id,
                         })
                         socket.join(newChannel.name)
                     }
@@ -66,10 +66,29 @@ module.exports = function (io) {
             }
         })
 
-        socket.on('leave-channel', (data) => {
-            //when user leave a channel remove ChannelUser entry
-
-            
+        socket.on('leave-channel', async (data) => {
+            const channel = {
+                id: data.channelId,
+                name: data.channelName,
+            }
+            const user = {
+                id: data.userId,
+            }
+            try {
+                await ChannelUser.findAll({
+                    where: {
+                        channelId: channel.id,
+                        userId: user.id,
+                    },
+                }).then((data) => {
+                    data.forEach(async (element) => {
+                        await element.destroy()
+                    })
+                })
+            } catch (err) {
+                console.log(err)
+            }
+            socket.leave(channel.name)
         })
 
         socket.on('disconnect', function () {
@@ -85,19 +104,18 @@ module.exports = function (io) {
             }
 
             try {
-                await Message.create(newMessage)
-                    .then(async (data) => {
-                        await MessageUser.create({
-                            MessageId: data.id,
-                            UserId: newMessage.userId,
-                        })
-                    })
-                    .then(async (data) => {
+                await Message.create(newMessage).then(async (data) => {
+                    await MessageUser.create({
+                        MessageId: data.id,
+                        UserId: newMessage.userId,
+                    }).then(async (data) => {
                         await ChannelMessage.create({
-                            MessageId: data.id,
-                            channelId: newMessage.channelId,
+                            MessageId: data.MessageId,
+                            ChannelId: newMessage.channelId,
                         })
                     })
+                })
+
                 io.to(newMessage.channelId).emit('new-message', newMessage)
             } catch (err) {
                 console.log(err)
