@@ -8,6 +8,7 @@ module.exports = { // looking if data pass or fail
         }
         const { error, value } = Joi.validate(req.body, schema)
 
+        console.log(req.body)
         if (error) {
             switch (error.details[0].context.key) {
                 case 'username':

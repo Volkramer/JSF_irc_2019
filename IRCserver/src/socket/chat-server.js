@@ -27,7 +27,7 @@ module.exports = function(io) {
             )
         })
 
-        socket.on('join-channel', function(data) {
+        socket.on('join-channel', async(data) => {
             const newChannel = {
                 name: data.name,
             }

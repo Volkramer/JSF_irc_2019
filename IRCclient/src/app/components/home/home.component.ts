@@ -7,17 +7,17 @@ import { Component, OnInit } from '@angular/core';
 /*COMPONENTS*/
 ///////////////////////////////////////////////////////////////////////////////////
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss']
 })
-export class AppComponent implements OnInit {
+export class HomeComponent implements OnInit {
 
   constructor() {
 
   }
 
-  ngOnInit(): void {
 
+  ngOnInit(): void {
   }
 }
