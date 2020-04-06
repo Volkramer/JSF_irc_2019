@@ -1,11 +1,14 @@
 ///////////////////////////////////////////////////////////////////////////////////
+/*ROUTER*/
+import { NeedAuthGuard } from './router/NeedAuthGuard';
+///////////////////////////////////////////////////////////////////////////////////
 /*ANGULAR MODULE*/
 import { RouterModule } from '@angular/router'
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { EffectsModule } from '@ngrx/effects';
+// import { EffectsModule } from '@ngrx/effects';
 ///////////////////////////////////////////////////////////////////////////////////
 /*SERVICES*/
 import { ChatService } from './services/Socket/chat.service';
@@ -18,7 +21,8 @@ import { UserService }  from './services/Api/User/UserService';
 import { AuthenticationService } from './services/Api/Authen/AuthenticationService';
 ///////////////////////////////////////////////////////////////////////////////////
 /*STORE*/
-import { AuthEffects } from './store/effects/auth.effects';
+// import { AuthEffects } from './store/effects/auth.effects';
+// import { reducers } from './store/app.state';
 ///////////////////////////////////////////////////////////////////////////////////
 /*COMPONENTS*/
 import { AppComponent } from './app.component';
@@ -26,9 +30,9 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { LogInComponent } from './components/log-in/log-in.component';
 import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { environment } from '../environments/environment';
+// import { StoreModule } from '@ngrx/store';
+// import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+// import { environment } from '../environments/environment';
 ///////////////////////////////////////////////////////////////////////////////////
 
 @NgModule({
@@ -43,17 +47,16 @@ import { environment } from '../environments/environment';
     FormsModule, 
     BrowserModule,
     HttpClientModule,
-    EffectsModule.forRoot([AuthEffects]),
+    // EffectsModule.forRoot([AuthEffects]),
+    // StoreModule.forRoot(reducers, {}),
     RouterModule.forRoot([
       { path: 'log-in', component: LogInComponent },
       { path: 'sign-up', component: SignInComponent },
-      { path: 'dashboard', component: DashboardComponent},
+      { path: 'dashboard', component: DashboardComponent, canActivate: [NeedAuthGuard]},
       { path: '', component: HomeComponent },
       { path: '**', redirectTo: '/' }
     ]),
     FormsModule,
-
-    !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
   providers: [
     ChatService,
@@ -63,7 +66,8 @@ import { environment } from '../environments/environment';
     ChannelUserService,
     MessageService,
     MessageUserService,
-    UserService
+    UserService,
+    NeedAuthGuard
   ],
   bootstrap: [AppComponent]
 })

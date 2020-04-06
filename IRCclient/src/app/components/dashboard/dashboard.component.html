@@ -1,11 +1,13 @@
-<ul id="messages">
-    <li *ngFor="let message of messages">
-        {{ message }}
-    </li>
-</ul>
-<form action="">
-    <input #newMessage (keyup.enter)="sendMessage(newMessage)" />
-    <button (click)="sendMessage(newMessage)">
-    Send
-    </button>
-</form>
+<div *ngIf="customer.isLogged()">
+    <ul id="messages">
+        <li *ngFor="let message of messages">
+            {{ message }}
+        </li>
+    </ul>
+    <form action="">
+        <input #newMessage (keyup.enter)="sendMessage(newMessage)" />
+        <button (click)="sendMessage(newMessage)">
+            Send
+        </button>
+    </form>
+</div>

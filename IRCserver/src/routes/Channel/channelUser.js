@@ -3,15 +3,15 @@ const isAuthenticated = require('../../policies/isAuthenticated')
 
 module.exports = (app) => {
     app.get('/channelsuser',
-            // isAuthenticated,
+            isAuthenticated,
             ChannelsUserController.index) // all channel for the user connect
     app.get('/channelsuser/:channelId',
-        // isAuthenticated,
+        isAuthenticated,
         ChannelsUserController.getChannelUsers)
     app.post('/channelsuser',
-        // isAuthenticated,
+        isAuthenticated,
         ChannelsUserController.post)
     app.delete('/channelsuser/:channelUserId',
-        // isAuthenticated,
+        isAuthenticated,
         ChannelsUserController.delete)
 }

@@ -1,3 +1,4 @@
+import { AuthenticationService } from './../../services/Api/Authen/AuthenticationService';
 ///////////////////////////////////////////////////////////////////////////////////
 /*SERVICES*/
 import { ChatService } from '../../services/Socket/chat.service';
@@ -8,6 +9,7 @@ import { MessageService }  from '../../services/Api/Message/MessageService';
 import { MessageUserService }  from '../../services/Api/Message/MessageUserService';
 import { UserService }  from '../../services/Api/User/UserService';
 import { ApiCommands } from '../../services/Api/ApiCommands'
+import { CustomerService } from './../../services/Api/Authen/CustomerService';
 ///////////////////////////////////////////////////////////////////////////////////
 /*ANGULAR MODULE*/
 import { Component, OnInit } from '@angular/core';
@@ -30,6 +32,7 @@ export class DashboardComponent implements OnInit {
   channelsMessages : Object;
   messagesUsers : Object;
   private ApiCmd = new ApiCommands("")
+  customer = new CustomerService();
 
   constructor(private chatService: ChatService) {
 
@@ -54,8 +57,8 @@ export class DashboardComponent implements OnInit {
       // console.log(message);
       this.messages.push(message);
     });
-      // this.channels = await this.ApiCmd.getChannels("")
-      // console.log(this.channels);
+    this.channels = await this.ApiCmd.getChannels("")
+    // console.log(this.channels);
       // this.users = await this.ApiCmd.getUsers("")
       // console.log(this.users);
       // this.msg = await this.ApiCmd.getMessages("")

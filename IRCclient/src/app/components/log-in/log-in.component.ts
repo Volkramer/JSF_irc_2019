@@ -1,10 +1,12 @@
+import { RouterModule } from '@angular/router';
 ///////////////////////////////////////////////////////////////////////////////////
 /*SERVICES*/
 import { AuthenticationService } from './../../services/Api/Authen/AuthenticationService';
+import { CustomerService } from './../../services/Api/Authen/CustomerService';
 ///////////////////////////////////////////////////////////////////////////////////
 /*ANGULAR MODULE*/
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 ///////////////////////////////////////////////////////////////////////////////////
 /*COMPONENTS*/
 ///////////////////////////////////////////////////////////////////////////////////
@@ -12,8 +14,6 @@ import { Store } from '@ngrx/store';
 import { User } from '../../models/user'
 ///////////////////////////////////////////////////////////////////////////////////
 /*STORE*/
-import { AppState } from '../../store/app.state';
-import { LogIn } from '../../store/actions/auth.actions';
 ///////////////////////////////////////////////////////////////////////////////////
 @Component({
   selector: 'app-log-in',
@@ -23,10 +23,11 @@ import { LogIn } from '../../store/actions/auth.actions';
 export class LogInComponent implements OnInit {
 
   user: User = new User();
-  private AuthService = new AuthenticationService();
-
   
-  constructor(private store: Store<AppState>) {
+  constructor(/*private store: Store<AppState>*/ 
+    private router: Router,
+    private AuthService: AuthenticationService,
+    private customer: CustomerService) {
 
   }
   
@@ -38,9 +39,16 @@ export class LogInComponent implements OnInit {
     const resp = await this.AuthService.signin({
       username: this.user.username,
       password: this.user.password
+    }).then(
+      (resp) => {
+        if (resp.data.token) {
+          this.customer.setToken(resp.data.token)
+          this.router.navigateByUrl('/dashboard')
+        }
+      },
+      () => {
+          alert("Wrong credentials")
     })
-    console.log(resp.data)
-    this.store.dispatch(new LogIn(resp.data))
   }
 
 }

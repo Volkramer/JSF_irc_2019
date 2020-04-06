@@ -7,10 +7,6 @@ export class AuthenticationService {
 
   }
 
-  getToken() : string {
-    return localStorage.getItem('token')
-  }
-
   register(credentials) {
     return Api().post('register', credentials)
   }
