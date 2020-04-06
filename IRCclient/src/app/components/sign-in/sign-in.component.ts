@@ -18,7 +18,7 @@ import { User } from '../../models/user'
 export class SignInComponent implements OnInit {
 
   user: User = new User();
-  private Auth = new AuthenticationService();
+  private AuthService = new AuthenticationService();
 
   constructor() {
 
@@ -29,7 +29,7 @@ export class SignInComponent implements OnInit {
   }
 
   async onSubmit() {
-    const resp = await this.Auth.register({
+    const resp = await this.AuthService.register({
       username: this.user.username,
       password: this.user.password
     })

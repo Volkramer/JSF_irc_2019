@@ -3,15 +3,15 @@ const isAuthenticated = require('../../policies/isAuthenticated')
 
 module.exports = (app) => {
     app.get('/messagesuser',
-        isAuthenticated,
+        // isAuthenticated,
         MessagesUserController.index)
     app.get('/messagesuser/:userId',
-        isAuthenticated,
+        // isAuthenticated,
         MessagesUserController.getMessagesUser)
     app.post('/messagesuser',
-        isAuthenticated,
+        // isAuthenticated,
         MessagesUserController.post)
     app.delete('/messagesuser/:messageUserId',
-        isAuthenticated,
+        // isAuthenticated,
         MessagesUserController.delete)
 }

@@ -3,18 +3,18 @@ const isAuthenticated = require('../../policies/isAuthenticated')
 
 module.exports = (app) => {
     app.get('/users',
-        isAuthenticated,
+        // isAuthenticated,
         UsersController.index)
     app.get('/users/:userId',
-        isAuthenticated,
+        // isAuthenticated,
         UsersController.getUser)
     app.post('/users',
-        isAuthenticated,
+        // isAuthenticated,
         UsersController.post)
     app.delete('/users/:userId',
-        isAuthenticated,
+        // isAuthenticated,
         UsersController.delete)
     app.put('/users/:userId',
-        isAuthenticated,
+        // isAuthenticated,
         UsersController.put)
 }

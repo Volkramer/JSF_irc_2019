@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { EffectsModule } from '@ngrx/effects';
 ///////////////////////////////////////////////////////////////////////////////////
 /*SERVICES*/
 import { ChatService } from './services/Socket/chat.service';
@@ -16,12 +17,18 @@ import { MessageUserService }  from './services/Api/Message/MessageUserService';
 import { UserService }  from './services/Api/User/UserService';
 import { AuthenticationService } from './services/Api/Authen/AuthenticationService';
 ///////////////////////////////////////////////////////////////////////////////////
+/*STORE*/
+import { AuthEffects } from './store/effects/auth.effects';
+///////////////////////////////////////////////////////////////////////////////////
 /*COMPONENTS*/
 import { AppComponent } from './app.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { LogInComponent } from './components/log-in/log-in.component';
 import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 ///////////////////////////////////////////////////////////////////////////////////
 
 @NgModule({
@@ -36,6 +43,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     FormsModule, 
     BrowserModule,
     HttpClientModule,
+    EffectsModule.forRoot([AuthEffects]),
     RouterModule.forRoot([
       { path: 'log-in', component: LogInComponent },
       { path: 'sign-up', component: SignInComponent },
@@ -43,7 +51,9 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
       { path: '', component: HomeComponent },
       { path: '**', redirectTo: '/' }
     ]),
-    FormsModule
+    FormsModule,
+
+    !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
   providers: [
     ChatService,

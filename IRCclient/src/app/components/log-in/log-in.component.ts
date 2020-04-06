@@ -4,11 +4,16 @@ import { AuthenticationService } from './../../services/Api/Authen/Authenticatio
 ///////////////////////////////////////////////////////////////////////////////////
 /*ANGULAR MODULE*/
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 ///////////////////////////////////////////////////////////////////////////////////
 /*COMPONENTS*/
 ///////////////////////////////////////////////////////////////////////////////////
 /*MODEL/OBJECT*/
 import { User } from '../../models/user'
+///////////////////////////////////////////////////////////////////////////////////
+/*STORE*/
+import { AppState } from '../../store/app.state';
+import { LogIn } from '../../store/actions/auth.actions';
 ///////////////////////////////////////////////////////////////////////////////////
 @Component({
   selector: 'app-log-in',
@@ -18,23 +23,24 @@ import { User } from '../../models/user'
 export class LogInComponent implements OnInit {
 
   user: User = new User();
-  private Auth = new AuthenticationService();
+  private AuthService = new AuthenticationService();
 
   
-  constructor() {
+  constructor(private store: Store<AppState>) {
 
   }
   
   ngOnInit(): void {
- 
+
   }
 
   async onSubmit() {
-    const resp = await this.Auth.signin({
+    const resp = await this.AuthService.signin({
       username: this.user.username,
       password: this.user.password
     })
     console.log(resp.data)
+    this.store.dispatch(new LogIn(resp.data))
   }
 
 }
