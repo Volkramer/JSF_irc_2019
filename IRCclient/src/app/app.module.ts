@@ -10,6 +10,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 // import { EffectsModule } from '@ngrx/effects';
 ///////////////////////////////////////////////////////////////////////////////////
+/*UI*/
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+///////////////////////////////////////////////////////////////////////////////////
 /*SERVICES*/
 import { ChatService } from './services/Socket/chat.service';
 import { ChannelMessageService }  from './services/Api/Channel/ChannelMessageService';
@@ -47,14 +50,16 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     FormsModule, 
     BrowserModule,
     HttpClientModule,
+    NgbModule,
     // EffectsModule.forRoot([AuthEffects]),
     // StoreModule.forRoot(reducers, {}),
     RouterModule.forRoot([
       { path: 'log-in', component: LogInComponent },
       { path: 'sign-up', component: SignInComponent },
       { path: 'dashboard', component: DashboardComponent, canActivate: [NeedAuthGuard]},
-      { path: '', component: HomeComponent },
-      { path: '**', redirectTo: '/' }
+      // { path: 'home', component: HomeComponent },
+      { path: '', redirectTo: '/log-in', pathMatch: 'full' }
+      // { path: '**', redirectTo: '/' }
     ]),
     FormsModule,
   ],

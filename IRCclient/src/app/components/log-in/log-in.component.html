@@ -1,8 +1,8 @@
-<div class="row">
-    <div class="col-md-4">
+<div class="row h-100">
+    <div class="col-6 align-self-center">
         <h1>Log in</h1>
         <hr><br>
-        <form (ngSubmit)="onSubmit()" ngNativeValidate>
+        <form class="form-signin" (ngSubmit)="onSubmit()" ngNativeValidate>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input [(ngModel)]="user.username" name="username" type="username" required class="form-control" id="username" placeholder="enter your username">

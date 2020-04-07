@@ -1,4 +1,7 @@
 <div *ngIf="customer.isLogged()">
+    <div *ngFor="let channel of channels">
+        <a class="nav-link btn btn-secondary" routerLinkActive="active" [routerLink]="['/channel', channel.id]">{{ channel.name }}</a>
+    </div>
     <ul id="messages">
         <li *ngFor="let message of messages">
             {{ message }}

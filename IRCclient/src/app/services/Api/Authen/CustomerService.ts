@@ -16,6 +16,10 @@ export class CustomerService {
         localStorage.setItem(token, TOKEN);
     }
 
+    destroyCache(): void {
+        localStorage.clear()
+    }
+
     isLogged() {
         return localStorage.getItem(token) != null;
     }
