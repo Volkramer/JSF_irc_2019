@@ -1,32 +1,38 @@
 <div *ngIf="customer.isLogged()">
-    <div class="row">
-        <div class="col">
-            <div *ngFor="let channel of channels">
-                <button class="nav-link btn btn-secondary" (click)="getChanMsgs(channel.id)">{{ channel.name }}</button>
-            </div>
-        </div>
-        <div *ngIf="messages != null" class="col">
-            <ul id="messages">
-                <li *ngFor="let channelMessage of channelMessages">
-                    <!-- {{ channelMessage.Message.createdAt }} -->
-                    <h5>
-                        {{ channelMessage.Message.username }}
-                    </h5>
-                    <p>
-                        {{ channelMessage.Message.message }} </p>
-                </li>
-            </ul>
-            <ul id="messages">
-                <li *ngFor="let msg of messages">
-                    <p> {{ msg }} </p>
-                </li>
-            </ul>
-            <form action="">
-                <input #newMessage (keyup.enter)="sendMessage(newMessage)" />
-                <button (click)="sendMessage(newMessage)">
-                    Send
-                </button>
-            </form>
-        </div>
+  <div class="row">
+    <div class="col">
+      <div *ngFor="let channel of channels">
+        <button
+          class="nav-link btn btn-secondary"
+          (click)="getChanMsgs(channel.id)"
+        >
+          {{ channel.name }}
+        </button>
+      </div>
     </div>
+    <div class="col">
+      <ul id="messages">
+        <li *ngFor="let channelMessage of channelMessages">
+          <!-- {{ channelMessage.Message.createdAt }} -->
+          <h5>
+            {{ channelMessage.Message.username }}
+          </h5>
+          <p>
+            {{ channelMessage.Message.message }}
+          </p>
+        </li>
+      </ul>
+      <ul id="messages">
+        <li *ngFor="let msg of messages">
+          <p>{{ msg }}</p>
+        </li>
+      </ul>
+      <form action="">
+        <input #newMessage (keyup.enter)="sendMessage(newMessage)" />
+        <button (click)="sendMessage(newMessage)">
+          Send
+        </button>
+      </form>
+    </div>
+  </div>
 </div>

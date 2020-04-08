@@ -15,7 +15,7 @@ module.exports = function (io) {
 
         console.log('user ' + address + ' connected. Socket ID: ' + socketID)
 
-        socket.on('nickname', function(data) {
+        socket.on('nickname', function (data) {
             // ### TODO ###
             // find data.userID
             // change nickname
@@ -91,15 +91,15 @@ module.exports = function (io) {
             socket.leave(channel.name)
         })
 
-        socket.on('disconnect', function() {
+        socket.on('disconnect', function () {
             console.log('user ' + socketID + ' disconnected.')
         })
 
-        socket.on('new-message', async(data) => {
+        socket.on('new-message', async (data) => {
             const newMessage = {
                 message: data.message,
-                username: data.username,
                 userId: data.userId,
+                username: data.username,
                 channelId: data.channelId,
             }
 
@@ -115,7 +115,6 @@ module.exports = function (io) {
                         })
                     })
                 })
-
                 io.to(newMessage.channelId).emit('new-message', newMessage)
             } catch (err) {
                 console.log(err)
