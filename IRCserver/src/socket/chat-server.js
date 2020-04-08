@@ -8,8 +8,8 @@ const {
     ChannelMessage,
 } = require('../models')
 
-module.exports = function (io) {
-    io.on('connection', function (socket) {
+module.exports = function(io) {
+    io.on('connection', function(socket) {
         var address = socket.request.connection.remoteAddress
         var socketID = socket.id
 
@@ -24,7 +24,7 @@ module.exports = function (io) {
             )
         })
 
-        socket.on('join-channel', async (data) => {
+        socket.on('join-channel', async(data) => {
             const newChannel = {
                 name: data.name,
             }
@@ -36,23 +36,23 @@ module.exports = function (io) {
                     where: {
                         name: newChannel.name,
                     },
-                }).then(async (data) => {
+                }).then(async(data) => {
                     console.log(data)
-                    if (data == undefined || data.length == 0) {
+                    if (data == undefined || data.length == 0) { // CA A LAIR BON AUSSI
                         console.log("Channel doesn't exist!")
-                        /* try {
-                            await Channel.create(newChannel).then(
-                                async (data) => {
-                                    await ChannelUser.create({
-                                        ChannelId: data.id,
-                                        UserId: user.id,
-                                    })
-                                    socket.join(newChannel.name)
-                                }
-                            )
-                        } catch (err) {
-                            console.log(err)
-                        } */
+                            /* try {
+                                await Channel.create(newChannel).then(
+                                    async (data) => {
+                                        await ChannelUser.create({
+                                            ChannelId: data.id,
+                                            UserId: user.id,
+                                        })
+                                        socket.join(newChannel.name)
+                                    }
+                                )
+                            } catch (err) {
+                                console.log(err)
+                            } */
                     } else {
                         await ChannelUser.create({
                             ChannelId: data[0].id,
@@ -66,7 +66,7 @@ module.exports = function (io) {
             }
         })
 
-        socket.on('leave-channel', async (data) => {
+        socket.on('leave-channel', async(data) => { // CA A LAIR BON
             const channel = {
                 id: data.channelId,
                 name: data.channelName,
@@ -81,7 +81,7 @@ module.exports = function (io) {
                         userId: user.id,
                     },
                 }).then((data) => {
-                    data.forEach(async (element) => {
+                    data.forEach(async(element) => {
                         await element.destroy()
                     })
                 })
@@ -92,6 +92,7 @@ module.exports = function (io) {
         })
 
         socket.on('disconnect', function() {
+            // Tu dois push un message dans la DB ( USERNAME HAS DISCONNECT)
             console.log('user ' + socketID + ' disconnected.')
         })
 
@@ -104,11 +105,11 @@ module.exports = function (io) {
             }
 
             try {
-                await Message.create(newMessage).then(async (data) => {
+                await Message.create(newMessage).then(async(data) => { // CA A LAIR BON
                     await MessageUser.create({
                         MessageId: data.id,
                         UserId: newMessage.userId,
-                    }).then(async (data) => {
+                    }).then(async(data) => {
                         await ChannelMessage.create({
                             MessageId: data.MessageId,
                             ChannelId: newMessage.channelId,
