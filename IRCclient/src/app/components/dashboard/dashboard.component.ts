@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit {
 
     // this.channelId => SEULEMENT QUAND ON SELECTIONNE LE CHANNEL
     // this.customer.getUser() => ID USER 
+    console.log(newMessage)
     this.message = newMessage.value;
     var param = this.message.split(' ')[1];
     this.messages.push(this.message) // PUSH MESSAGE SEND

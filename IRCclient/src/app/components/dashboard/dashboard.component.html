@@ -5,7 +5,7 @@
                 <button class="nav-link btn btn-secondary" (click)="getChanMsgs(channel.id)">{{ channel.name }}</button>
             </div>
         </div>
-        <div *ngIf="messages != null" class="col">
+        <div class="col">
             <ul id="messages">
                 <li *ngFor="let channelMessage of channelMessages">
                     <!-- {{ channelMessage.Message.createdAt }} -->
