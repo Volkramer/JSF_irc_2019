@@ -1,14 +1,22 @@
 <div *ngIf="customer.isLogged()">
   <div class="row">
     <div class="col">
-      <div *ngFor="let channelUser of userChannels">
+      <div *ngFor="let channel of channels">
+        <button
+          class="nav-link btn btn-secondary"
+          (click)="getChanMsgs(channel.id)"
+        >
+          {{ channel.name }}
+        </button>
+      </div>
+      <!--  <div *ngFor="let channelUser of userChannels">
         <button
           class="nav-link btn btn-secondary"
           (click)="getChanMsgs(channelUser.Channel.id)"
         >
           {{ channelUser.name }}
         </button>
-      </div>
+      </div> -->
     </div>
     <div class="col">
       <ul id="messages">

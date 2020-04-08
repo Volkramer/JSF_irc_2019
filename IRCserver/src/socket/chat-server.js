@@ -37,7 +37,6 @@ module.exports = function (io) {
                         name: newChannel.name,
                     },
                 }).then(async (data) => {
-                    console.log(data)
                     if (data == undefined || data.length == 0) {
                         // CA A LAIR BON AUSSI
                         console.log("Channel doesn't exist!")

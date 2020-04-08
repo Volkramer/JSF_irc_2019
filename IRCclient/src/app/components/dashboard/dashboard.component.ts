@@ -46,15 +46,17 @@ export class DashboardComponent implements OnInit {
     // this.channelId => SEULEMENT QUAND ON SELECTIONNE LE CHANNEL
     // this.customer.getUser() => ID USER
     this.message = newMessage.value;
-    var param = this.message.split(/ (.*)/);
+    var param = this.message.split(/ (.*)/)[1];
     //this.messages.push(this.message); // PUSH MESSAGE SEND
     if (this.message.startsWith('/join')) {
       const data = {
         channelName: param,
         userId: this.user['id'],
       };
+      console.log(data);
       this.chatService.joinChannel(data);
       this.userChannels = await this.ApiCmd.getUserChannels(this.user['id']);
+      this.channels = await this.ApiCmd.getChannels('');
     } else if (this.message.startsWith('/nick')) {
       //this.chatService.newNickname(data);
     } else if (this.message.startsWith('/leave')) {
@@ -64,6 +66,7 @@ export class DashboardComponent implements OnInit {
       };
       this.chatService.leaveChannel(data);
       this.userChannels = await this.ApiCmd.getUserChannels(this.user['id']);
+      this.channels = await this.ApiCmd.getChannels('');
     } else if (this.message !== '') {
       const data = {
         message: this.message,
