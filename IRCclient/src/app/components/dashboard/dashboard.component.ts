@@ -32,6 +32,7 @@ export class DashboardComponent implements OnInit {
   channelMessages : Object;
   messagesUsers : Object;
   channelId;
+  time;
   private ApiCmd = new ApiCommands("")
   customer = new CustomerService();
 
@@ -58,14 +59,19 @@ export class DashboardComponent implements OnInit {
   }
 
   async getChanMsgs(channelId) {
-      await this.delay(3, async () => {
+      this.clear(this.time)
+      await this.delay(1, async () => {
         this.channelMessages = await this.ApiCmd.getChannelMessages(channelId) // GET CHANNEL MSG EVERY 3SEC
         this.channelId = channelId
       })
   }
 
   delay = (time, callback) => {
-    setInterval(callback, time*1000)
+    this.time = setInterval(callback, time*1000)
+  }
+
+  clear = (time) => {
+    clearInterval(time)
   }
 
   async ngOnInit() {
@@ -73,11 +79,6 @@ export class DashboardComponent implements OnInit {
       this.messages.push(message);
     });
     this.channels = await this.ApiCmd.getChannels("")
-    // async () => {
-    //   this.delay(1, () => {
-    //     this.getChanMsgs(this.channelMessages);
-    //   })
-    // }
   }
 }
 
