@@ -45,6 +45,10 @@ export class ApiCommands {
         let resp = await this.ChanMsgService.index()
         return (resp.data)
     }
+    async getChannelMessages(channelId) {
+        let resp = await this.ChanMsgService.get(channelId)
+        return (resp.data)
+    }
 ///////////////////////////////////////////////////////////////////////////////////
     /*MessagesUsers*/
     async getMessagesUsers() {

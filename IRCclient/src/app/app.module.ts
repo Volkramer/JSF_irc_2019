@@ -31,8 +31,8 @@ import { AuthenticationService } from './services/Api/Authen/AuthenticationServi
 import { AppComponent } from './app.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { LogInComponent } from './components/log-in/log-in.component';
-import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 // import { StoreModule } from '@ngrx/store';
 // import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 // import { environment } from '../environments/environment';
@@ -43,8 +43,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     AppComponent, 
     SignInComponent, 
     LogInComponent, 
-    HomeComponent, 
-    DashboardComponent
+    DashboardComponent, 
+    PageNotFoundComponent
   ],
   imports: [
     FormsModule, 
@@ -57,9 +57,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
       { path: 'log-in', component: LogInComponent },
       { path: 'sign-up', component: SignInComponent },
       { path: 'dashboard', component: DashboardComponent, canActivate: [NeedAuthGuard]},
-      // { path: 'home', component: HomeComponent },
-      { path: '', redirectTo: '/log-in', pathMatch: 'full' }
-      // { path: '**', redirectTo: '/' }
+      { path: '', redirectTo: '/log-in', pathMatch: 'full' },
+      { path: '**', component: PageNotFoundComponent }
     ]),
     FormsModule,
   ],

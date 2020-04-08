@@ -43,6 +43,7 @@ export class LogInComponent implements OnInit {
       (resp) => {
         if (resp.data.token) {
           this.customer.setToken(resp.data.token)
+          this.customer.setUser(resp.data.user)
           this.router.navigateByUrl('/dashboard')
         }
       },

@@ -29,8 +29,9 @@ export class DashboardComponent implements OnInit {
   msg : Object;
   users : Object;
   channelsUsers : Object;
-  channelsMessages : Object;
+  channelMessages : Object;
   messagesUsers : Object;
+  channelId;
   private ApiCmd = new ApiCommands("")
   customer = new CustomerService();
 
@@ -38,9 +39,13 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  sendMessage(newMessage) {
+  async sendMessage(newMessage) {
+
+    // this.channelId => SEULEMENT QUAND ON SELECTIONNE LE CHANNEL
+    // this.customer.getUser() => ID USER 
     this.message = newMessage.value;
     var param = this.message.split(' ')[1];
+    this.messages.push(this.message) // PUSH MESSAGE SEND
     if (this.message.startsWith('/join')) {
       this.chatService.joinChannel(param);
     } else if (this.message.startsWith('/nick')) {
@@ -49,25 +54,45 @@ export class DashboardComponent implements OnInit {
       this.chatService.sendMessage(this.message);
     }
     newMessage.value = '';
+    this.channelMessages = await this.ApiCmd.getChannelMessages(this.channelId) // GET CHANNEL MSG AFTER PUSH
   }
 
+  async getChanMsgs(channelId) {
+      await this.delay(3, async () => {
+        this.channelMessages = await this.ApiCmd.getChannelMessages(channelId) // GET CHANNEL MSG EVERY 3SEC
+        this.channelId = channelId
+      })
+  }
+
+  delay = (time, callback) => {
+    setInterval(callback, time*1000)
+  }
 
   async ngOnInit() {
     this.chatService.getMessage().subscribe((message: string) => {
-      // console.log(message);
       this.messages.push(message);
     });
     this.channels = await this.ApiCmd.getChannels("")
-    // console.log(this.channels);
-      // this.users = await this.ApiCmd.getUsers("")
-      // console.log(this.users);
-      // this.msg = await this.ApiCmd.getMessages("")
-      // console.log(this.msg)
-      // this.channelsUsers = await this.ApiCmd.getChannelsUsers()
-      // console.log(this.channelsUsers);
-      // this.channelsMessages = await this.ApiCmd.getChannelsMessages()
-      // await console.log(this.channelsMessages);
-      // this.messagesUsers = await this.ApiCmd.getMessagesUsers()
-      // await console.log(this.messagesUsers);
+    // async () => {
+    //   this.delay(1, () => {
+    //     this.getChanMsgs(this.channelMessages);
+    //   })
+    // }
   }
 }
+
+
+
+
+
+// console.log(this.channels);
+  // this.users = await this.ApiCmd.getUsers("")
+  // console.log(this.users);
+  // this.msg = await this.ApiCmd.getMessages("")
+  // console.log(this.msg)
+  // this.channelsUsers = await this.ApiCmd.getChannelsUsers()
+  // console.log(this.channelsUsers);
+  // this.channelsMessages = await this.ApiCmd.getChannelsMessages()
+  // await console.log(this.channelsMessages);
+  // this.messagesUsers = await this.ApiCmd.getMessagesUsers()
+  // await console.log(this.messagesUsers);
