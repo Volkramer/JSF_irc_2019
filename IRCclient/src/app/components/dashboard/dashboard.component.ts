@@ -40,9 +40,6 @@ export class DashboardComponent implements OnInit {
 
   constructor(private chatService: ChatService) {
     this.user = this.customer.getUser();
-    console.log(this.userChannels);
-    console.log(this.channels);
-    console.log(this.channelId);
   }
 
   async sendMessage(newMessage) {
@@ -104,9 +101,7 @@ export class DashboardComponent implements OnInit {
       this.messages.push(message);
     }); */
     this.channels = await this.ApiCmd.getChannels('');
-    console.log(this.channels);
     this.userChannels = await this.ApiCmd.getUserChannels(this.user['id']);
-    console.log(this.userChannels);
   }
 }
 
