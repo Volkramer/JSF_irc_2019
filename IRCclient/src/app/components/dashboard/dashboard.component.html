@@ -2,7 +2,9 @@
     <div class="row">
         <div class="col">
             <div *ngFor="let channel of channels">
-                <button class="nav-link btn btn-secondary" (click)="getChanMsgs(channel.id)">{{ channel.name }}</button>
+                <button class="nav-link btn btn-secondary" (click)="getChanMsgs(channel.id)">
+          {{ channel.name }}
+        </button>
             </div>
         </div>
         <div class="col">
@@ -13,19 +15,20 @@
                         {{ channelMessage.Message.username }}
                     </h5>
                     <p>
-                        {{ channelMessage.Message.message }} </p>
+                        {{ channelMessage.Message.message }}
+                    </p>
                 </li>
             </ul>
             <ul id="messages">
                 <li *ngFor="let msg of messages">
-                    <p> {{ msg }} </p>
+                    <p>{{ msg }}</p>
                 </li>
             </ul>
             <form action="">
                 <input #newMessage (keyup.enter)="sendMessage(newMessage)" />
                 <button (click)="sendMessage(newMessage)">
-                    Send
-                </button>
+          Send
+        </button>
             </form>
         </div>
     </div>

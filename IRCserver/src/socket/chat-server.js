@@ -92,15 +92,14 @@ module.exports = function(io) {
         })
 
         socket.on('disconnect', function() {
-            // Tu dois push un message dans la DB ( USERNAME HAS DISCONNECT)
             console.log('user ' + socketID + ' disconnected.')
         })
 
         socket.on('new-message', async(data) => {
             const newMessage = {
                 message: data.message,
-                username: data.username,
                 userId: data.userId,
+                username: data.username,
                 channelId: data.channelId,
             }
 
@@ -116,7 +115,6 @@ module.exports = function(io) {
                         })
                     })
                 })
-
                 io.to(newMessage.channelId).emit('new-message', newMessage)
             } catch (err) {
                 console.log(err)
