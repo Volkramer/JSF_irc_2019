@@ -60,6 +60,7 @@ export class DashboardComponent implements OnInit {
 
   async getChanMsgs(channelId) {
       this.clear(this.time)
+      this.messages = null
       await this.delay(1, async () => {
         this.channelMessages = await this.ApiCmd.getChannelMessages(channelId) // GET CHANNEL MSG EVERY 3SEC
         this.channelId = channelId
