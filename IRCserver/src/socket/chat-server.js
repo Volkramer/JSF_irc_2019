@@ -8,14 +8,14 @@ const {
     ChannelMessage,
 } = require('../models')
 
-module.exports = function(io) {
-    io.on('connection', function(socket) {
+module.exports = function (io) {
+    io.on('connection', function (socket) {
         var address = socket.request.connection.remoteAddress
         var socketID = socket.id
 
         console.log('user ' + address + ' connected. Socket ID: ' + socketID)
 
-        socket.on('nickname', function(data) {
+        socket.on('nickname', function (data) {
             // ### TODO ###
             // find data.userID
             // change nickname
@@ -24,9 +24,9 @@ module.exports = function(io) {
             )
         })
 
-        socket.on('join-channel', async(data) => {
+        socket.on('join-channel', async (data) => {
             const newChannel = {
-                name: data.name,
+                name: data.channelName,
             }
             const user = {
                 id: data.userId,
@@ -36,23 +36,24 @@ module.exports = function(io) {
                     where: {
                         name: newChannel.name,
                     },
-                }).then(async(data) => {
+                }).then(async (data) => {
                     console.log(data)
-                    if (data == undefined || data.length == 0) { // CA A LAIR BON AUSSI
+                    if (data == undefined || data.length == 0) {
+                        // CA A LAIR BON AUSSI
                         console.log("Channel doesn't exist!")
-                            /* try {
-                                await Channel.create(newChannel).then(
-                                    async (data) => {
-                                        await ChannelUser.create({
-                                            ChannelId: data.id,
-                                            UserId: user.id,
-                                        })
-                                        socket.join(newChannel.name)
-                                    }
-                                )
-                            } catch (err) {
-                                console.log(err)
-                            } */
+                        try {
+                            await Channel.create(newChannel).then(
+                                async (data) => {
+                                    await ChannelUser.create({
+                                        ChannelId: data.id,
+                                        UserId: user.id,
+                                    })
+                                    socket.join(newChannel.name)
+                                }
+                            )
+                        } catch (err) {
+                            console.log(err)
+                        }
                     } else {
                         await ChannelUser.create({
                             ChannelId: data[0].id,
@@ -66,7 +67,8 @@ module.exports = function(io) {
             }
         })
 
-        socket.on('leave-channel', async(data) => { // CA A LAIR BON
+        socket.on('leave-channel', async (data) => {
+            // CA A LAIR BON
             const channel = {
                 id: data.channelId,
                 name: data.channelName,
@@ -81,21 +83,21 @@ module.exports = function(io) {
                         userId: user.id,
                     },
                 }).then((data) => {
-                    data.forEach(async(element) => {
+                    data.forEach(async (element) => {
                         await element.destroy()
                     })
                 })
             } catch (err) {
                 console.log(err)
             }
-            socket.leave(channel.name)
+            //socket.leave(channel.name)
         })
 
-        socket.on('disconnect', function() {
+        socket.on('disconnect', function () {
             console.log('user ' + socketID + ' disconnected.')
         })
 
-        socket.on('new-message', async(data) => {
+        socket.on('new-message', async (data) => {
             const newMessage = {
                 message: data.message,
                 userId: data.userId,
@@ -104,11 +106,12 @@ module.exports = function(io) {
             }
 
             try {
-                await Message.create(newMessage).then(async(data) => { // CA A LAIR BON
+                await Message.create(newMessage).then(async (data) => {
+                    // CA A LAIR BON
                     await MessageUser.create({
                         MessageId: data.id,
                         UserId: newMessage.userId,
-                    }).then(async(data) => {
+                    }).then(async (data) => {
                         await ChannelMessage.create({
                             MessageId: data.MessageId,
                             ChannelId: newMessage.channelId,

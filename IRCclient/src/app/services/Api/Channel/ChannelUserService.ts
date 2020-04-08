@@ -1,24 +1,25 @@
-import Api from '../Api'
+import Api from '../Api';
 
 export class ChannelUserService {
-
-  constructor() {
-
-  }
+  constructor() {}
 
   public index() {
-    return Api().get('channelsuser')
+    return Api().get('channelsuser');
   }
 
   public get(channelId) {
-    return Api().delete(`channelsuser/${channelId}`)
+    return Api().get(`channelsuser/${channelId}`);
+  }
+
+  public getUserChannels(userId) {
+    return Api().get(`userchannels/${userId}`);
   }
 
   public post(channelUser) {
-    return Api().post('channelsuser', channelUser)
+    return Api().post('channelsuser', channelUser);
   }
 
   public delete(channelUserId) {
-    return Api().delete(`channelsuser/${channelUserId}`)
+    return Api().delete(`channelsuser/${channelUserId}`);
   }
 }

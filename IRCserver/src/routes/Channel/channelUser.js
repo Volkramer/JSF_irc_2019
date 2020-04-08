@@ -2,16 +2,21 @@ const ChannelsUserController = require('../../controllers/Channel/ChannelsUserCo
 const isAuthenticated = require('../../policies/isAuthenticated')
 
 module.exports = (app) => {
-    app.get('/channelsuser',
-            isAuthenticated,
-            ChannelsUserController.index) // all channel for the user connect
-    app.get('/channelsuser/:channelId',
+    app.get('/channelsuser', isAuthenticated, ChannelsUserController.index) // all channel for the user connect
+    app.get(
+        '/channelsuser/:channelId',
         isAuthenticated,
-        ChannelsUserController.getChannelUsers)
-    app.post('/channelsuser',
+        ChannelsUserController.getChannelUsers
+    )
+    app.get(
+        '/userchannels/:userId',
         isAuthenticated,
-        ChannelsUserController.post)
-    app.delete('/channelsuser/:channelUserId',
+        ChannelsUserController.getUserChannels
+    )
+    app.post('/channelsuser', isAuthenticated, ChannelsUserController.post)
+    app.delete(
+        '/channelsuser/:channelUserId',
         isAuthenticated,
-        ChannelsUserController.delete)
+        ChannelsUserController.delete
+    )
 }

@@ -9,19 +9,23 @@ export class ChatService {
     this.socket = io(this.url);
   }
 
-  public sendMessage(message) {
-    this.socket.emit('new-message', message);
+  public sendMessage(data) {
+    this.socket.emit('new-message', data);
   }
 
-  public joinChannel(channelName) {
-    this.socket.emit('join-channel', channelName);
+  public joinChannel(data) {
+    this.socket.emit('join-channel', data);
   }
 
-  public newNickname(nickname) {
-    this.socket.emit('nickname', nickname);
+  public leaveChannel(data) {
+    this.socket.emit('leave-channel', data);
   }
 
-  public getMessage = () => {
+  public newNickname(data) {
+    this.socket.emit('nickname', data);
+  }
+
+  /* public getMessage = () => {
     const observable = new Observable((observer) => {
       this.socket.on('new-message', (data) => {
         observer.next(data);
@@ -31,5 +35,5 @@ export class ChatService {
       };
     });
     return observable;
-  };
+  }; */
 }

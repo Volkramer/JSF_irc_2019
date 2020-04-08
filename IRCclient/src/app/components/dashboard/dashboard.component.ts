@@ -28,6 +28,7 @@ export class DashboardComponent implements OnInit {
   channels: Object;
   msg: Object;
   user: Object;
+  userChannels: Object;
   users: Object;
   channelsUsers: Object;
   channelMessages: Object;
@@ -39,31 +40,46 @@ export class DashboardComponent implements OnInit {
 
   constructor(private chatService: ChatService) {
     this.user = this.customer.getUser();
+    console.log(this.userChannels);
+    console.log(this.channels);
+    console.log(this.channelId);
   }
 
   async sendMessage(newMessage) {
     // this.channelId => SEULEMENT QUAND ON SELECTIONNE LE CHANNEL
     // this.customer.getUser() => ID USER
     this.message = newMessage.value;
-    var param = this.message.split(' ')[1];
+    var param = this.message.split(/ (.*)/);
     //this.messages.push(this.message); // PUSH MESSAGE SEND
     if (this.message.startsWith('/join')) {
-      this.chatService.joinChannel(param);
+      const data = {
+        channelName: param,
+        userId: this.user['id'],
+      };
+      this.chatService.joinChannel(data);
+      this.userChannels = await this.ApiCmd.getUserChannels(this.user['id']);
     } else if (this.message.startsWith('/nick')) {
-      this.chatService.newNickname(param);
-    } else {
-      const param = {
+      //this.chatService.newNickname(data);
+    } else if (this.message.startsWith('/leave')) {
+      const data = {
+        channelId: this.channelId,
+        userId: this.user['id'],
+      };
+      this.chatService.leaveChannel(data);
+      this.userChannels = await this.ApiCmd.getUserChannels(this.user['id']);
+    } else if (this.message !== '') {
+      const data = {
         message: this.message,
         userId: this.user['id'],
         username: this.user['username'],
         channelId: this.channelId,
       };
-      console.log(param);
-      this.chatService.sendMessage(param);
+      this.chatService.sendMessage(data);
     }
     newMessage.value = '';
-    this.messages = null;
+    //this.messages = null;
     this.channelMessages = await this.ApiCmd.getChannelMessages(this.channelId); // GET CHANNEL MSG AFTER PUSH
+    return;
   }
 
   async getChanMsgs(channelId) {
@@ -84,10 +100,13 @@ export class DashboardComponent implements OnInit {
   };
 
   async ngOnInit() {
-    this.chatService.getMessage().subscribe((message: string) => {
+    /* this.chatService.getMessage().subscribe((message: string) => {
       this.messages.push(message);
-    });
+    }); */
     this.channels = await this.ApiCmd.getChannels('');
+    console.log(this.channels);
+    this.userChannels = await this.ApiCmd.getUserChannels(this.user['id']);
+    console.log(this.userChannels);
   }
 }
 
