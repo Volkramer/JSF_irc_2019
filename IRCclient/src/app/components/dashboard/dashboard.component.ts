@@ -53,7 +53,6 @@ export class DashboardComponent implements OnInit {
         channelName: param,
         userId: this.user['id'],
       };
-      console.log(data);
       this.chatService.joinChannel(data);
       this.userChannels = await this.ApiCmd.getUserChannels(this.user['id']);
       this.channels = await this.ApiCmd.getChannels('');
@@ -64,9 +63,12 @@ export class DashboardComponent implements OnInit {
         channelId: this.channelId,
         userId: this.user['id'],
       };
+      this.clear(this.time);
       this.chatService.leaveChannel(data);
       this.userChannels = await this.ApiCmd.getUserChannels(this.user['id']);
       this.channels = await this.ApiCmd.getChannels('');
+      this.channelMessages = null
+      return
     } else if (this.message !== '') {
       const data = {
         message: this.message,
@@ -77,7 +79,6 @@ export class DashboardComponent implements OnInit {
       this.chatService.sendMessage(data);
     }
     newMessage.value = '';
-    //this.messages = null;
     this.channelMessages = await this.ApiCmd.getChannelMessages(this.channelId); // GET CHANNEL MSG AFTER PUSH
     return;
   }
@@ -100,9 +101,6 @@ export class DashboardComponent implements OnInit {
   };
 
   async ngOnInit() {
-    /* this.chatService.getMessage().subscribe((message: string) => {
-      this.messages.push(message);
-    }); */
     this.channels = await this.ApiCmd.getChannels('');
     this.userChannels = await this.ApiCmd.getUserChannels(this.user['id']);
   }
